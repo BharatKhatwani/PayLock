@@ -1,6 +1,25 @@
 import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt";
+interface Session {
+  user: {
+    id ?: string |null , 
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+  expires: string;
+}
+interface JWT {
+    id ?: string | null, 
+  name?: string | null;
+  email?: string | null;
+  picture?: string | null;
+  sub?: string; // usually user id
+  iat?: number;
+  exp?: number;
+  jti?: string;
+}
 
 export const authOptions = {
     providers: [
@@ -56,7 +75,7 @@ export const authOptions = {
     secret: process.env.JWT_SECRET || "secret",
     callbacks: {
         // TODO: can u fix the type here? Using any is bad
-        async session({ token, session }: any) {
+        async session({ token, session }: {session : Session, token : JWT }) {
             session.user.id = token.sub
 
             return session
