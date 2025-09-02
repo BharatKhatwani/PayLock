@@ -6,7 +6,10 @@
     "./button": "./src/button.tsx",
     "./card": "./src/card.tsx",
     "./code": "./src/code.tsx",
-    "./appbar": "./src/Appbar.tsx"
+    "./appbar": "./src/Appbar.tsx", 
+    "./center" : "./src/center.tsx", 
+    "./select" : "./src/select.tsx", 
+    "./textinput" : "./src/textinput"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -23,5 +26,10 @@
     "eslint": "^8.57.0",
     "react": "^18.2.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "main": ".eslintrc.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
