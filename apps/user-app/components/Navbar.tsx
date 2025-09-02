@@ -12,7 +12,7 @@ export default function Navbar() {
       {/* Actions */}
       <div>
         <button
-          onClick={() => signOut({ callbackUrl: "/auth/sign" })} // redirects after logout
+          onClick={() => signOut({ callbackUrl: "/auth" })} // redirects after logout
           className="px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 transition-colors"
         >
           Logout
