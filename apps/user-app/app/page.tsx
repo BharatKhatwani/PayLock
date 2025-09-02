@@ -1,19 +1,19 @@
 // app/user/page.tsx
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
-import { authOptions } from "./lib/auth"; // adjust path
+import { authOptions } from "./lib/auth"; // correct path
 
 export default async function UserPage() {
-  // Get session from cookies (server-side)
+  // Pass cookies automatically in App Router
   const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    // Not logged in → redirect to login
-    redirect("/auth");
+console.log(session)
+  if (session?.user) {
+    // User is already logged in → go to dashboard
+    redirect("/dashboard");
   }
 
-  // Logged in → redirect to dashboard
-  redirect("/user/dashboard");
+  // Not logged in → show login page
+  redirect("/auth");
 
   return null; // never renders
 }

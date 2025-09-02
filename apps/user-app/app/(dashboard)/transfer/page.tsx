@@ -5,6 +5,8 @@ import { authOptions } from "../../lib/auth";
 import { AddMoney } from "../../../components/AddMoney";
 import { BalanceCard } from "../../../components/BalanceCard";
 import { OnRampTransactions } from "../../../components/OnRampTransaction";
+import { redirect } from "next/navigation";
+
 
 async function getBalance(userId: string) {
   const balance = await prisma.balance.findFirst({
@@ -34,32 +36,21 @@ async function getOnRampTransactions(userId: string) {
 export default async function TransferPage() {
   const session = await getServerSession(authOptions);
 
-  // Temporary session check for testing layout
-  const userId = session?.user?.id || "1";
+  
+  const userId = session.user.id;
 
   const balance = await getBalance(userId);
   const transactions = await getOnRampTransactions(userId);
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-gray-50 p-4">
-      {/* Page title */}
       <h1 className="text-4xl font-bold text-[#6a51a6] mb-4">Transfer</h1>
-
-      {/* Main container with max width */}
       <div className="w-full max-w-6xl flex flex-col gap-6">
-        {/* AddMoney section */}
-        <div className="w-full">
-          <AddMoney />
-        </div>
-
-        {/* Bottom row: BalanceCard + OnRampTransactions */}
+        <AddMoney />
         <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-y-auto">
-          {/* BalanceCard */}
           <div className="flex-1 flex flex-col min-w-0">
             <BalanceCard amount={balance.amount} locked={balance.locked} />
           </div>
-
-          {/* OnRampTransactions */}
           <div className="flex-1 flex flex-col min-w-0">
             <OnRampTransactions transactions={transactions} />
           </div>

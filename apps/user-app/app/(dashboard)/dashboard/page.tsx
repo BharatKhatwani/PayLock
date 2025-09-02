@@ -1,5 +1,12 @@
-export default function() {
-    return <div>
-        Dashboard Page 
+// app/dashboard/page.tsx
+
+
+export default async function DashboardPage() {
+ 
+  return (
+    <div>
+      <h1>Dashboard</h1>
+   
     </div>
+  );
 }
