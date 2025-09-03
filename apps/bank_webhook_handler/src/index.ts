@@ -1,76 +1,102 @@
 import express from 'express';
 import db from '@repo/db/client';
 import { z } from 'zod';
-import { Request, Response } from "express";
-
-
-const PORT = process.env.PORT || 3003;
+const Port = process.env.PORT || 3003;
 const app = express();
 app.use(express.json());
+import {Request , Response} from "express"
+import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 
-// ✅ Schema validation
-const TransactionSchema = z.object({
-  userId: z.number(),
-  amount: z.number().positive(),
-  token: z.string().min(1),
+const TranscationSchema = z.object({
+  userId: z.string(),
+  amount: z.number(),
+  token: z.string(),
 });
-
-// ✅ Process pending transactions on startup
+// ** Function to handle pending transactions on server startup **
 async function processPendingTransactions() {
   try {
     const pendingTransactions = await db.onRampTransaction.findMany({
       where: { status: 'Processing' },
     });
 
-    for (const tx of pendingTransactions) {
+    // console.log(db.balance)
+    for (const transaction of pendingTransactions) {
       await db.$transaction([
         db.balance.update({
-          where: { userId: tx.userId },
-          data: { amount: { increment: tx.amount } },
+          where: { userId: transaction.userId },
+          data: {
+            amount: {
+              increment: transaction.amount, // Increment user balance by transaction amount
+            },
+          },
         }),
         db.onRampTransaction.update({
-          where: { id: tx.id },
+          where: { id: transaction.id },
           data: { status: 'Success' },
         }),
       ]);
     }
 
-    console.log(`Processed ${pendingTransactions.length} pending transactions.`);
+    console.log(
+      `Processed ${pendingTransactions.length} pending transactions.`
+    );
   } catch (error) {
     console.error('Error processing pending transactions:', error);
   }
 }
+app.get("/", (req: Request, res: Response) => {
+  // console.log(db.balance)
+  console.log("HEty")
+  res.send("Hello World");
+});
 
-// ✅ Webhook handler
-app.post("/hdfcWebhook", async (req: Request, res: Response) => {
-  const result = TransactionSchema.safeParse(req.body);
+app.post('/hdfcWebhook', async (req, res) => {
+
+
+  const result = TranscationSchema.safeParse(req.body);
+
   if (!result.success) {
-    return res.status(400).json({ message: 'Invalid payload', errors: result.error.errors });
+    res.status(400).send(result.error);
+    return;
   }
 
-  const { userId, amount, token } = result.data;
+  const paymentInformation = {
+    token: req.body.token,
+    userId: req.body.userId,
+    amount: req.body.amount,
+  };
 
   try {
     await db.$transaction([
-      db.balance.update({
-        where: { userId },
-        data: { amount: { increment: amount } },
+      db.balance.updateMany({
+        where: {
+          userId: Number(paymentInformation.userId),
+        },
+        data: {
+          amount: {
+            increment: Number(paymentInformation.amount),
+          },
+        },
       }),
-      db.onRampTransaction.update({
-        where: { token },
-        data: { status: 'Success' },
+      db.onRampTransaction.updateMany({
+        where: {
+          token: paymentInformation.token,
+        },
+        data: {
+          status: 'Success',
+        },
       }),
     ]);
 
-    return res.status(200).json({ message: 'Captured payment' });
-  } catch (error) {
-    console.error('Webhook Error:', error);
-    return res.status(500).json({ message: 'Error while processing webhook' });
+    res.status(200).json({ message: 'Captured payment' });
+  } catch (e) {
+    console.log(e);
+    res.status(411).json({ message: 'Error while Processing webhook' });
   }
 });
 
-// ✅ Start server
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+
+app.listen(Port, async () => {
+  console.log(`Server is running on ${Port}`);
   await processPendingTransactions();
 });
