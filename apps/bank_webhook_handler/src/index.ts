@@ -19,7 +19,7 @@ async function processPendingTransactions() {
       where: { status: 'Processing' },
     });
 
-    // console.log(db.balance)
+    console.log(db.balance)
     for (const transaction of pendingTransactions) {
       await db.$transaction([
         db.balance.update({
@@ -46,7 +46,7 @@ async function processPendingTransactions() {
 }
 app.get("/", (req: Request, res: Response) => {
   // console.log(db.balance)
-  console.log("HEty")
+  // console.log("HEty")
   res.send("Hello World");
 });
 
