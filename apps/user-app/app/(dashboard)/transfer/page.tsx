@@ -44,14 +44,14 @@ export default async function () {
   const transactions = await getOnRampTransactions();
   return (
     <div className="w-full mt-2 ">
-      <div className="text-2xl  md:text-4xl pt-8 mb-8 font-bold text-violet-600 flex flex-col items-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800">
-          <span className="text-purple-500">PayLoad </span>Transfer
-        </h1>
-        <p className="mt-2 text-lg md:text-xl text-slate-800 font-normal">
-          Transfer funds seamlessly
-        </p>
-      </div>
+       <div className="mb-3">
+  <h1 className="text-center text-3xl ">
+    <span className="text-purple-500 font-bold">PayLoad </span> Transfer 
+  </h1>
+  <p className="text-center text-gray-600 mt-2 italic">
+    Track all your transactions effortlessly
+  </p>
+</div>
       <div className=" gap-4 md:grid-cols -2 pt-4  md:px-28">
         <div>
           <AddMoney />

@@ -1,9 +1,9 @@
-import { CiWallet } from "react-icons/ci";
+import { CiWallet, CiSearch } from "react-icons/ci";
+import { FaMoneyBillWave, FaPaperPlane, FaPlusCircle } from "react-icons/fa";
 import prisma from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import Link from "next/link";
-// import { RecentTransactions } from "../../../components/RecentTransactions"; // 👈 import client comp
 import { OnRampTransaction } from "../../../components/OnRampTransaction";
 
 async function getUserBalance(userId: number) {
@@ -17,16 +17,15 @@ async function getTransactions(userId: number) {
   try {
     const transactions = await prisma.onRampTransaction.findMany({
       where: { userId },
-      orderBy: { startTime: 'desc' },
-      take: 5 // Limit to 5 most recent transactions
+      orderBy: { startTime: "desc" },
+      take: 5, // Limit to 5 most recent transactions
     });
-    
-    // Transform the transactions to ensure time is a Date object
-    return transactions.map(t => ({
+
+    return transactions.map((t) => ({
       ...t,
       time: t.startTime ? new Date(t.startTime) : new Date(),
-      status: t.status || 'Pending',
-      provider: t.provider || 'PayTM'
+      status: t.status || "Pending",
+      provider: t.provider || "PayTM",
     }));
   } catch (error) {
     console.error("Error fetching transactions:", error);
@@ -45,13 +44,16 @@ export default async function DashboardPage() {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 flex justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-5xl flex flex-col items-center py-8 gap-8">
+      {/* Centered container like Transfer page */}
+      <div className="w-full max-w-3xl flex flex-col items-center py-8 gap-8">
         {/* Header */}
         <div className="text-center">
           <h1 className="text-4xl font-bold">
             <span className="text-purple-500">PayLoad</span> Dashboard
           </h1>
-          <p className="mt-2 text-gray-600">Manage your finances with ease</p>
+          <p className="mt-2 text-gray-600 italic">
+            Your smart wallet for effortless money management
+          </p>
         </div>
 
         {/* Balance Card */}
@@ -68,34 +70,38 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Transactions */}
-         <div className="bg-white w-full shadow-lg rounded-lg overflow-hidden mb-8">
+        <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden mb-8">
           <OnRampTransaction transactions={transactions} />
         </div>
 
         {/* Action Boxes */}
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-5xl grid md:grid-cols-2 gap-6">
-            {/* Quick Search Box */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between gap-4">
-              <h2 className="text-xl font-semibold text-gray-800">Quick Search</h2>
-              <p className="text-gray-500">Transfer money to your contacts instantly.</p>
-              <Link href="/p2p" className="mt-4">
-                <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
-                  Send Money
-                </button>
-              </Link>
-            </div>
+        <div className="w-full grid md:grid-cols-2 gap-6">
+          {/* Quick Search Box */}
+          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between gap-4">
+            <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <CiSearch className="text-blue-500 text-2xl" /> Quick Search
+            </h2>
+            <p className="text-gray-500">
+              Transfer money to your contacts instantly.
+            </p>
+            <Link href="/p2p" className="mt-4">
+              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2">
+                Send Money
+              </button>
+            </Link>
+          </div>
 
-            {/* Add Funds Box */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between gap-4">
-              <h2 className="text-xl font-semibold text-gray-800">Add Funds</h2>
-              <p className="text-gray-500">Top up your PayLoad wallet easily.</p>
-              <Link href="/transfer" className="mt-4">
-                <button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg">
-                  Add Money
-                </button>
-              </Link>
-            </div>
+          {/* Add Funds Box */}
+          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between gap-4">
+            <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <FaMoneyBillWave className="text-green-500 text-2xl" /> Add Funds
+            </h2>
+            <p className="text-gray-500">Top up your PayLoad wallet easily.</p>
+            <Link href="/transfer" className="mt-4">
+              <button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2">
+              Add Money
+              </button>
+            </Link>
           </div>
         </div>
       </div>

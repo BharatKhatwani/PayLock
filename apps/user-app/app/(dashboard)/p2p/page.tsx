@@ -9,8 +9,8 @@ export default async function DashboardPage() {
         <span className="text-purple-500">PayLoad</span> P2P Transfer
       </h1>
       
-      <p className="text-center text-gray-600 mt-2">
-        Fast and safe P2P transfers
+      <p className="text-center text-gray-600 mt-2 italic">
+        Send money instantly with security and ease 
       </p>
 
       {/* Card */}

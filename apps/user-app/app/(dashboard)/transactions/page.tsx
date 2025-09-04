@@ -3,103 +3,167 @@ import prisma from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 
+// Fetch P2P transactions
+async function getP2pTransactions(userId: number) {
+  const txns = await prisma.p2pTransfer.findMany({
+    where: {
+      OR: [{ fromUserId: userId }, { toUserId: userId }],
+    },
+    orderBy: { timestamp: "desc" },
+    take: 5,
+  });
+
+  return txns.map((t) => ({
+    id: t.id,
+    amount: t.amount,
+    timestamp: t.timestamp,
+    fromUserId: t.fromUserId,
+    toUserId: t.toUserId,
+    type: t.fromUserId === userId ? "Sent" : "Received",
+  }));
+}
+
+// Fetch OnRamp transactions
 async function getOnRampTransactions(userId: number, status: string) {
   const txns = await prisma.onRampTransaction.findMany({
-    where: { userId, status  },
+    where: { userId, status },
     orderBy: { startTime: "desc" },
     take: 5,
   });
 
   return txns.map((t) => ({
-    time: t.startTime,
+    id: t.id,
     amount: t.amount,
-    status: String(t.status),
+    timestamp: t.startTime,
+    status: t.status,
     provider: t.provider || "PayTM",
   }));
 }
+
+// Reusable card renderer for OnRamp
+const renderOnRampTransactions = (
+  title: string,
+  txns: any[],
+  color: string,
+  emptyMsg: string
+) => (
+  <div className="bg-white p-5 rounded-xl shadow-sm border">
+    <h3 className="text-lg font-semibold mb-3">{title}</h3>
+    {txns.length > 0 ? (
+      <ul className="space-y-3">
+        {txns.map((txn) => (
+          <li key={txn.id} className="flex justify-between items-center border-t pt-2">
+            <div>
+              <p className="font-medium">Received INR</p>
+              <p className="text-sm text-gray-500">{txn.timestamp.toDateString()}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold">₹{txn.amount / 100}</p>
+              <p className={`text-sm font-medium ${color}`}>{txn.status}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-gray-500 text-center py-6">{emptyMsg}</p>
+    )}
+  </div>
+);
+
+// Reusable card renderer for P2P
+const renderP2pTransactions = (
+  title: string,
+  txns: any[],
+  emptyMsg: string
+) => (
+  <div className="bg-white p-5 rounded-xl shadow-sm border">
+    <h3 className="text-lg font-semibold mb-3">{title}</h3>
+    {txns.length > 0 ? (
+      <ul className="space-y-3">
+        {txns.map((txn) => (
+          <li key={txn.id} className="flex justify-between items-center border-t pt-2">
+            <div>
+              <p className="font-medium">{txn.type} INR</p>
+              <p className="text-sm text-gray-500">{txn.timestamp.toDateString()}</p>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold">₹{txn.amount / 100}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-gray-500 text-center py-6">{emptyMsg}</p>
+    )}
+  </div>
+);
 
 export default async function TransactionsPage() {
   const session = await getServerSession(authOptions);
   const userId = Number(session?.user?.id);
 
-  const [successTxns, pendingTxns, failedTxns] = await Promise.all([
+  // Fetch all transactions
+  const [successTxns, pendingTxns, failedTxns, p2pTxns] = await Promise.all([
     getOnRampTransactions(userId, "Success"),
     getOnRampTransactions(userId, "Processing"),
     getOnRampTransactions(userId, "Failure"),
+    getP2pTransactions(userId),
   ]);
 
-  const renderTransactions = (
-    title: string,
-    txns: any[],
-    color: string,
-    emptyMsg: string,
-    extraClasses: string = ""
-  ) => (
-    <div
-      className={`bg-white p-5 rounded-xl shadow-sm border ${extraClasses}`}
-    >
-      <h3 className="text-lg font-semibold mb-3">{title}</h3>
-      {txns.length > 0 ? (
-        <ul className="space-y-3">
-          {txns.map((txn, idx) => (
-            <li
-              key={idx}
-              className="flex justify-between items-center border-t pt-2"
-            >
-              <div>
-                <p className="font-medium">Received INR</p>
-                <p className="text-sm text-gray-500">
-                  {txn.time.toDateString()}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">+ ₹{txn.amount / 100}</p>
-                <p className={`text-sm font-medium ${color}`}>{txn.status}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-500 text-center py-6">{emptyMsg}</p>
-      )}
-    </div>
-  );
+  const sentMoney = p2pTxns.filter((txn) => txn.type === "Sent");
+  const receivedMoney = p2pTxns.filter((txn) => txn.type === "Received");
 
   return (
-    <div className="w-full min-h-screen flex flex-col p-6 bg-gray-50">
-      {/* Header */}
-      <div className="text-left mb-8">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <CiWallet className="text-blue-500" />
-          <span className="text-purple-500">Wallet</span> Transactions
-        </h2>
+    <div className="w-full min-h-screen flex flex-col bg-gray-50">
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-bold">
+          <span className="text-purple-500">PayLoad</span> Transactions
+        </h1>
+        <p className="text-gray-600 mt-2 italic">
+          Secure and simple way to manage your transactions.
+        </p>
       </div>
 
-      {/* Centered Transaction Cards */}
-      <div className="flex flex-col items-center space-y-4">
-        {/* Successful card centered */}
-        <div className="w-full max-w-2xl">
-          {renderTransactions(
+      {/* P2P Transactions */}
+      <div className="max-w-3xl mx-auto w-full px-4 py-8 mb-8">
+        <h2 className="text-2xl font-bold flex items-center justify-start gap-2 mb-6">
+          <CiWallet className="text-blue-500" />
+          <span className="text-purple-500">P2P Transactions</span>
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {renderP2pTransactions("Sent Payments", sentMoney, "No sent payments")}
+          {renderP2pTransactions("Received Payments", receivedMoney, "No received payments")}
+        </div>
+      </div>
+
+      {/* OnRamp Transactions */}
+      <div className="max-w-3xl mx-auto w-full px-4 py-8">
+        <h2 className="text-2xl font-bold flex items-center justify-start gap-2 mb-6">
+          <CiWallet className="text-blue-500" />
+          <span className="text-purple-500">Wallet Transactions</span>
+        </h2>
+
+        <div className="mb-6">
+          {renderOnRampTransactions(
             "Successful Transactions",
             successTxns,
             "text-green-600",
-            "No Recent transactions"
+            "No recent transactions"
           )}
         </div>
 
-        {/* Processing + Failure cards grouped & centered */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
-          {renderTransactions(
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {renderOnRampTransactions(
             "Processing Transactions",
             pendingTxns,
             "text-yellow-600",
-            "No Recent transactions"
+            "No recent transactions"
           )}
-          {renderTransactions(
-            "Failure Transactions",
+          {renderOnRampTransactions(
+            "Failed Transactions",
             failedTxns,
             "text-red-600",
-            "No Recent transactions"
+            "No recent transactions"
           )}
         </div>
       </div>
