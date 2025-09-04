@@ -46,9 +46,12 @@ export default function AxisTransactionPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <header className="bg-purple-500 text-white p-4">
+      <header className="bg-purple-500 text-white ">
         <div className="container mx-auto flex justify-between items-center">
-          <Image src={axis} alt="Axis Bank Logo" width={120} height={40} />
+          <Image src={axis} alt="Axis Bank Logo" 
+           width={65}
+            height={30}
+           />
           <nav>
             <ul className="flex space-x-4 text-sm">
               <li>Personal</li>

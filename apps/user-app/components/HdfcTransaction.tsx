@@ -50,8 +50,8 @@ export default function HDFCTransactionPage() {
           <Image
             src={hdfc}
             alt="HDFC Bank Logo"
-            width={120}
-            height={40}
+            width={65}
+            height={30}
           />
           <nav>
             <ul className="flex space-x-4 text-sm">
