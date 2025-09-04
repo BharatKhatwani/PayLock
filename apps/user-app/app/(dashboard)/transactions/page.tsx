@@ -46,7 +46,7 @@ const renderOnRampTransactions = (
   txns: any[],
   color: string,
   emptyMsg: string, 
-  status : string,
+  sign : string,
 ) => (
   <div className="bg-white p-5 rounded-xl shadow-sm border">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
@@ -59,7 +59,11 @@ const renderOnRampTransactions = (
               <p className="text-sm text-gray-500">{txn.timestamp.toDateString()}</p>
             </div>
             <div className="text-right">
-              <p className="font-semibold">₹{txn.amount / 100}</p>
+              <div className="flex gap-1">
+                {sign}
+<p className="font-semibold">₹{txn.amount / 100}</p>
+              </div>
+              
               <p className={`text-sm font-medium ${color}`}>{txn.status}</p>
             </div>
           </li>
@@ -157,7 +161,8 @@ export default async function TransactionsPage() {
             "Successful Transactions",
             successTxns,
             "text-green-600",
-            "No recent transactions"
+            "No recent transactions", 
+            "+"
           )}
         </div>
 
@@ -166,13 +171,15 @@ export default async function TransactionsPage() {
             "Processing Transactions",
             pendingTxns,
             "text-yellow-600",
-            "No recent transactions"
+            "No recent transactions", 
+            ""
           )}
           {renderOnRampTransactions(
             "Failed Transactions",
             failedTxns,
             "text-red-600",
-            "No recent transactions"
+            "No recent transactions", 
+            ""
           )}
         </div>
       </div>

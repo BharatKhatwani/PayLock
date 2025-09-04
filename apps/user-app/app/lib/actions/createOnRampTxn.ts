@@ -1,40 +1,39 @@
-'use server';
+"use server";
 
-import prisma from '@repo/db/client';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth';
+import prisma from "@repo/db/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
+import axios from "axios";
 
 export async function createOnRamptxn(amount: number, provider: string) {
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id || '';
+  const userId = (await session?.user?.id) || "";
   const token = Math.random().toString().substring(2, 7);
-
+  await webhook(amount, token, userId);
   if (!userId) {
     return {
-      message: 'User not logged in',
+      message: "User not logged in",
     };
   }
+  await prisma.onRampTransaction.create({
+    data: {
+      userId: Number(userId),
+      amount: amount,
+      provider,
+      status: "Success",
+      token: token,
+      startTime: new Date(),
+    },
+  });
 
-  try {
-    // Create a single transaction record
-    await prisma.onRampTransaction.create({
-      data: {
-        userId: Number(userId),
-        amount,
-        provider,
-        status: 'Processing',
-        token,
-        startTime: new Date(),
-      },
+  function webhook(amount: number, token: string, userId: string) {
+    axios.post("http://localhost:3003/hdfcWebhook", {
+      amount: amount || 0,
+      token: token || "",
+      userId: userId || "",
     });
-
-    return {
-      message: 'Transaction created and balance Pending',
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      message: 'Error while processing transaction',
-    };
   }
+  return {
+    message: "Transaction created successfully",
+  };
 }
