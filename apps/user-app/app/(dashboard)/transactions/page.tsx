@@ -45,7 +45,8 @@ const renderOnRampTransactions = (
   title: string,
   txns: any[],
   color: string,
-  emptyMsg: string
+  emptyMsg: string, 
+  status : string,
 ) => (
   <div className="bg-white p-5 rounded-xl shadow-sm border">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
@@ -74,7 +75,8 @@ const renderOnRampTransactions = (
 const renderP2pTransactions = (
   title: string,
   txns: any[],
-  emptyMsg: string
+  emptyMsg: string, 
+  sign : string
 ) => (
   <div className="bg-white p-5 rounded-xl shadow-sm border">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
@@ -87,7 +89,12 @@ const renderP2pTransactions = (
               <p className="text-sm text-gray-500">{txn.timestamp.toDateString()}</p>
             </div>
             <div className="text-right">
+            <div className="flex justify-center items-center gap-1">
+               <p>{sign}</p>
               <p className="font-semibold">₹{txn.amount / 100}</p>
+            </div>
+             
+              <span className="text-green-500">Success</span>
             </div>
           </li>
         ))}
@@ -110,9 +117,11 @@ export default async function TransactionsPage() {
     getP2pTransactions(userId),
   ]);
 
-  const sentMoney = p2pTxns.filter((txn) => txn.type === "Sent");
+  const sentMoney = p2pTxns.filter((txn) => txn.type === "Sent");   
   const receivedMoney = p2pTxns.filter((txn) => txn.type === "Received");
 
+
+  // const sentMoney = p2pTxns.filter(())
   return (
     <div className="w-full min-h-screen flex flex-col bg-gray-50">
       <div className="mb-6 text-center">
@@ -125,14 +134,14 @@ export default async function TransactionsPage() {
       </div>
 
       {/* P2P Transactions */}
-      <div className="max-w-3xl mx-auto w-full px-4 py-8 mb-8">
+      <div className="max-w-3xl mx-auto w-full px-4 py-8 mb-2">
         <h2 className="text-2xl font-bold flex items-center justify-start gap-2 mb-6">
           <CiWallet className="text-blue-500" />
           <span className="text-purple-500">P2P Transactions</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderP2pTransactions("Sent Payments", sentMoney, "No sent payments")}
-          {renderP2pTransactions("Received Payments", receivedMoney, "No received payments")}
+          {renderP2pTransactions("Sent Transactions", sentMoney, "No sent payments", "-")}
+          {renderP2pTransactions("Received Transactions", receivedMoney, "No received payments", "+")}
         </div>
       </div>
 
