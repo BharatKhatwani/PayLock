@@ -7,7 +7,7 @@ import { OnRampTransaction } from "../../../components/OnRampTransaction";
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Transfer | Flowpay',
+  title: 'Transfer | Payload',
   description: 'Transfer funds seamlessly with Flowpay digital wallet application',
 }
 
