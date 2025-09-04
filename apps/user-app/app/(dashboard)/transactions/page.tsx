@@ -127,7 +127,7 @@ export default async function TransactionsPage() {
 
   // const sentMoney = p2pTxns.filter(())
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gray-50">
+    <div className="w-full min-h-screen flex flex-col ">
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-bold">
           <span className="text-purple-500">PayLoad</span> Transactions

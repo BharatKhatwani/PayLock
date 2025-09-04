@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbar";
 import { SidebarItem } from "../../components/SidebarItem";
 import { HiHome, HiArrowRight, HiOutlineSwitchHorizontal } from "react-icons/hi";
 import { GoArrowUpRight } from "react-icons/go";
+import Footer from "../../components/Footer";
 
 export default async function DashboardLayout({
   children,
@@ -37,8 +38,16 @@ export default async function DashboardLayout({
         </div>
 
         {/* Page content */}
-        <div className="flex-1 p-6 bg-gray-50">{children}</div>
+       <div
+  className="flex-1 p-6"
+
+>
+  {children}
+</div>
+
+       
       </div>
+       <Footer/>
     </div>
   );
 }
