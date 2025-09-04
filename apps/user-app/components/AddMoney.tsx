@@ -9,35 +9,32 @@ import toast from "react-hot-toast";
 import { createOnRamptxn } from "../app/lib/actions/createOnRampTxn";
 
 const SUPPORTED_BANKS = [
-  {
-    name: "HDFC Bank",
-    redirectUrl: "https://netbanking.hdfcbank.com",
-  },
-  {
-    name: "Axis Bank",
-    redirectUrl: "https://www.axisbank.com/",
-  },
+  { name: "HDFC Bank", redirectUrl: "/Banks/hdfc" },
+  { name: "Axis Bank", redirectUrl: "/Banks/axis" },
 ];
 
 export const AddMoney = () => {
-  const [redirectUrl, setRedirectUrl] = useState(SUPPORTED_BANKS[0]?.redirectUrl);
   const [amount, setAmount] = useState<number>(0);
   const [provider, setProvider] = useState<string>(SUPPORTED_BANKS[0]?.name || "");
+  const [redirectUrl, setRedirectUrl] = useState<string>(SUPPORTED_BANKS[0]?.redirectUrl || "");
 
   const handleAddMoney = async () => {
-    if (amount > 0 && redirectUrl) {
-      try {
-        await createOnRamptxn(amount * 100, provider);
-        toast.success("Money is added");
-        // Redirect after a short delay to allow user to see the toast
-   
-      } catch (err) {
-        console.error("Error creating transaction:", err);
-        toast.error("Error creating transaction");
-        alert("Failed to create transaction. Try again.");
-      }
-    } else {
+    if (amount <= 0 || !provider) {
       alert("Please enter a valid amount and select a bank.");
+      return;
+    }
+
+    try {
+      // Create the transaction
+      await createOnRamptxn(amount * 100, provider);
+      toast.success("Money is added");
+
+      // Redirect to the bank page with amount in query params
+      window.open(`${redirectUrl}?amount=${amount}`, "_blank");
+    } catch (err) {
+      console.error("Error creating transaction:", err);
+      toast.error("Error creating transaction");
+      alert("Failed to create transaction. Try again.");
     }
   };
 
@@ -56,8 +53,8 @@ export const AddMoney = () => {
           onSelect={(value: string) => {
             const bank = SUPPORTED_BANKS.find((x) => x.name === value);
             if (bank) {
-              setRedirectUrl(bank.redirectUrl);
               setProvider(bank.name);
+              setRedirectUrl(bank.redirectUrl);
             }
           }}
           options={SUPPORTED_BANKS.map((x) => ({ key: x.name, value: x.name }))}

@@ -2,12 +2,12 @@
 
 import React from "react";
 import { signOut } from "next-auth/react";
-
+import Link from "next/link";
 export default function Navbar() {
   return (
     <div className="flex items-center justify-between px-6 py-4 bg-white shadow-md fixed top-0 left-0 right-0 z-50 border-b border-gray-200">
       {/* Brand / Logo */}
-      <h1 className="text-2xl font-bold text-purple-700">PayLoad</h1>
+      <Link href = "/dashboard" className="text-2xl font-bold text-purple-700 cursor-pointer">PayLoad</Link>
       
       {/* Actions */}
       <div>

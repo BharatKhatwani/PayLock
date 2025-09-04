@@ -26,15 +26,16 @@ enum P2PTransferStatus {
 }
 
 model p2pTransfer {
-  id         Int              @id @default(autoincrement())
+  id         Int               @id @default(autoincrement())
   amount     Int
-  timestamp  DateTime         @default(now())
-  status     P2PTransferStatus @default(Success)
+  timestamp  DateTime          @default(now())
+  status     P2PTransferStatus @default(Pending)  // only one status field
   fromUserId Int
-  fromUser   User             @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])
+  fromUser   User              @relation(name: "FromUserRelation", fields: [fromUserId], references: [id])
   toUserId   Int
-  toUser     User             @relation(name: "ToUserRelation", fields: [toUserId], references: [id])
+  toUser     User              @relation(name: "ToUserRelation", fields: [toUserId], references: [id])
 }
+
 model Merchant {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -65,6 +66,7 @@ enum AuthType {
   Google
   Github
 }
+
 
 enum OnRampStatus {
   Success
