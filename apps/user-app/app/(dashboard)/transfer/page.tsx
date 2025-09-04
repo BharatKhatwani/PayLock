@@ -1,31 +1,37 @@
-// app/(dashboard)/transfer/page.tsx
 import prisma from "@repo/db/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
 import { AddMoney } from "../../../components/AddMoney";
+import { authOptions } from "../../lib/auth";
 import { BalanceCard } from "../../../components/BalanceCard";
-import { OnRampTransactions } from "../../../components/OnRampTransaction";
-import { redirect } from "next/navigation";
+import { OnRampTransaction } from "../../../components/OnRampTransaction";
+import { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Transfer | Flowpay',
+  description: 'Transfer funds seamlessly with Flowpay digital wallet application',
+}
 
-async function getBalance(userId: string) {
+async function getBalance() {
+  const session = await getServerSession(authOptions);
   const balance = await prisma.balance.findFirst({
-    where: { userId: Number(userId) },
+    where: {
+      userId: Number(session?.user?.id),
+    },
   });
-
   return {
     amount: balance?.amount || 0,
     locked: balance?.locked || 0,
   };
 }
 
-async function getOnRampTransactions(userId: string) {
+async function getOnRampTransactions() {
+  const session = await getServerSession(authOptions);
   const txns = await prisma.onRampTransaction.findMany({
-    where: { userId: Number(userId) },
-    orderBy: { startTime: "desc" },
+    where: {
+      userId: Number(session?.user.id),
+    },
   });
-
-  return txns.map((t) => ({
+  return txns.map((t: any) => ({
     time: t.startTime,
     amount: t.amount,
     status: t.status,
@@ -33,26 +39,29 @@ async function getOnRampTransactions(userId: string) {
   }));
 }
 
-export default async function TransferPage() {
-  const session = await getServerSession(authOptions);
-
-  
-  const userId = session.user.id;
-
-  const balance = await getBalance(userId);
-  const transactions = await getOnRampTransactions(userId);
-
+export default async function () {
+  const balance = await getBalance();
+  const transactions = await getOnRampTransactions();
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-gray-50 p-4">
-      <h1 className="text-4xl font-bold text-[#6a51a6] mb-4">Transfer</h1>
-      <div className="w-full max-w-6xl flex flex-col gap-6">
-        <AddMoney />
-        <div className="flex flex-col md:flex-row gap-4 flex-1 overflow-y-auto">
-          <div className="flex-1 flex flex-col min-w-0">
+    <div className="w-full mt-2 ">
+      <div className="text-2xl  md:text-4xl pt-8 mb-8 font-bold text-violet-600 flex flex-col items-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800">
+          <span className="text-purple-500">PayLoad </span>Transfer
+        </h1>
+        <p className="mt-2 text-lg md:text-xl text-slate-800 font-normal">
+          Transfer funds seamlessly
+        </p>
+      </div>
+      <div className=" gap-4 md:grid-cols -2 pt-4  md:px-28">
+        <div>
+          <AddMoney />
+        </div>
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 px-2">
             <BalanceCard amount={balance.amount} locked={balance.locked} />
-          </div>
-          <div className="flex-1 flex flex-col min-w-0">
-            <OnRampTransactions transactions={transactions} />
+            <div>
+              <OnRampTransaction transactions={transactions} />
+            </div>
           </div>
         </div>
       </div>
