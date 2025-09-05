@@ -16,48 +16,53 @@ export default function Page() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError("");
 
-    try {
-      const onlyNumber = phoneNumber.replace(/\D/g, "");
+  try {
+    const onlyNumber = phoneNumber.replace(/\D/g, ""); // keep digits only
 
-      // Use signIn with "credentials" provider
-      const res = await signIn("credentials", {
-        redirect: false, // important: prevents automatic redirect
-        phone: onlyNumber,
-        password,
-      });
-      console.log("signIn result:", res);
-
+    // ✅ check phone number length
+    if (onlyNumber.length !== 10) {
       setIsLoading(false);
-
-      if (!res) {
-        setError("Something went wrong. Please try again.");
-        return;
-      }
-
-      if (res.error) {
-        setError(res.error || "Invalid phone number or password.");
-        return;
-      }
-
-      // On success
-      toast.success("Login successful!");
-      router.push("/dashboard");
-    } catch (err) {
-      setIsLoading(false);
-      setError("Something went wrong. Please try again.");
+      setError("Phone number must be exactly 10 digits.");
+      return;
     }
-  };
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      phone: onlyNumber,
+      password,
+    });
+
+    setIsLoading(false);
+
+    if (!res) {
+      setError("Something went wrong. Please try again.");
+      return;
+    }
+
+    if (res.error) {
+      setError(res.error || "Invalid phone number or password.");
+      return;
+    }
+
+    toast.success("Login successful!");
+    router.push("/dashboard");
+  } catch (err) {
+    setIsLoading(false);
+    setError("Something went wrong. Please try again.");
+  }
+};
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md p-8 border rounded shadow-md bg-white flex flex-col gap-6">
         <h1 className="text-2xl font-bold text-center">
-          Welcome to <span className="text-blue-500">PayLoad</span>
+          Welcome to <span className="text-purple-500">PayLoad</span>
         </h1>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
@@ -102,10 +107,10 @@ export default function Page() {
   className={`
     w-full py-3 px-4 text-white font-semibold rounded-lg
     shadow-md transition-all duration-200
-    ${isLoading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}
+    ${isLoading ? "bg-blue-300 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}
   `}
 >
-  {isLoading ? "Loading..." : "Login"}
+  {isLoading ? "Loading..." : "Continue"}
 </button>
 
         </form>
