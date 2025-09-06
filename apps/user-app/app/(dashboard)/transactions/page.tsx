@@ -3,6 +3,7 @@ import prisma from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { TransactionList } from "../../../components/TransactionList";
+import { OnRampStatus } from "@prisma/client";  // ✅ import enum
 
 // Fetch P2P transactions
 async function getP2pTransactions(userId: number) {
@@ -23,10 +24,10 @@ async function getP2pTransactions(userId: number) {
   }));
 }
 
-// Fetch OnRamp transactions
-async function getOnRampTransactions(userId: number, status: string) {
+// Fetch OnRamp transactions (status must be enum, not string)
+async function getOnRampTransactions(userId: number, status: OnRampStatus) {
   const txns = await prisma.onRampTransaction.findMany({
-    where: { userId, status },
+    where: { userId, status }, // ✅ status is enum now
     orderBy: { startTime: "desc" },
   });
 
@@ -83,10 +84,11 @@ export default async function TransactionsPage() {
   const session = await getServerSession(authOptions);
   const userId = Number(session?.user?.id);
 
+  // ✅ use OnRampStatus enums instead of strings
   const [successTxns, pendingTxns, failedTxns, p2pTxns] = await Promise.all([
-    getOnRampTransactions(userId, "Success"),
-    getOnRampTransactions(userId, "Processing"),
-    getOnRampTransactions(userId, "Failure"),
+    getOnRampTransactions(userId, OnRampStatus.Success),
+    getOnRampTransactions(userId, OnRampStatus.Processing),
+    getOnRampTransactions(userId, OnRampStatus.Failure),
     getP2pTransactions(userId),
   ]);
 
@@ -111,8 +113,18 @@ export default async function TransactionsPage() {
           <span className="text-[#12478C]">P2P Transactions</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderP2pTransactions("Sent Transactions", sentMoney, "No sent payments", "-")}
-          {renderP2pTransactions("Received Transactions", receivedMoney, "No received payments", "+")}
+          {renderP2pTransactions(
+            "Sent Transactions",
+            sentMoney,
+            "No sent payments",
+            "-"
+          )}
+          {renderP2pTransactions(
+            "Received Transactions",
+            receivedMoney,
+            "No received payments",
+            "+"
+          )}
         </div>
       </div>
 
@@ -124,12 +136,30 @@ export default async function TransactionsPage() {
         </h2>
 
         <div className="mb-6">
-          {renderOnRampTransactions("Successful Transactions", successTxns, "text-green-600", "No recent transactions", "+")}
+          {renderOnRampTransactions(
+            "Successful Transactions",
+            successTxns,
+            "text-green-600",
+            "No recent transactions",
+            "+"
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderOnRampTransactions("Processing Transactions", pendingTxns, "text-yellow-600", "No recent transactions", "")}
-          {renderOnRampTransactions("Failed Transactions", failedTxns, "text-red-600", "No recent transactions", "")}
+          {renderOnRampTransactions(
+            "Processing Transactions",
+            pendingTxns,
+            "text-yellow-600",
+            "No recent transactions",
+            ""
+          )}
+          {renderOnRampTransactions(
+            "Failed Transactions",
+            failedTxns,
+            "text-red-600",
+            "No recent transactions",
+            ""
+          )}
         </div>
       </div>
     </div>
