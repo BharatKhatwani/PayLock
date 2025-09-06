@@ -15,10 +15,7 @@ export function AppbarClient() {
           router.push("/home");
         }}
 
-
-
-        
-        user={session.data?.user}
+ user={session.data?.user}
       />
     </div>
   );
