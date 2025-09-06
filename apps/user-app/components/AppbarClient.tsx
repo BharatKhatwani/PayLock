@@ -14,7 +14,8 @@ export function AppbarClient() {
           await signOut();
           router.push("/home");
         }}
-        user={session.data?.user}
+
+ user={session.data?.user}
       />
     </div>
   );
