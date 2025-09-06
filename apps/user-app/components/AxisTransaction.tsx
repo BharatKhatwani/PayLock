@@ -41,8 +41,6 @@ export default function AxisTransactionPage() {
     };
 
 
-
-    
     processTransaction();
   }, []);
 
