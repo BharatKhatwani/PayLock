@@ -29,7 +29,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar: () => voi
       {/* Actions */}
       <div>
         <button
-          onClick={() => signOut({ callbackUrl: "/auth" })}
+          onClick={() => signOut({ callbackUrl: "/home" })}
           className="px-4 py-2 bg-[#12478C] text-white rounded hover:bg-[#12478C] transition-colors"
         >
           Logout

@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="flex flex-col md:flex-row justify-between gap-8">
         {/* About */}
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-bold text-black">PayLoad</h1>
+          <h1 className="text-xl font-bold ">PayLoad</h1>
           <p>Simplifying your finances with secure and seamless digital payments.</p>
           <p>© 2025 PayLoad. All rights reserved.</p>
         </div>
@@ -25,15 +25,15 @@ export default function Footer() {
 
         {/* Social */}
         <div className="flex flex-col gap-2">
-          <h1 className="text-lg font-semibold">Connect With Us</h1>
-          <div className="flex gap-4 text-2xl">
-            <a href="https://www.linkedin.com/in/bharat-khatwani-864616257/" target="_blank" rel="noopener noreferrer">
+          <h1 className="text-lg font-semibold text-gray-500">Connect With Us</h1>
+          <div className="flex gap-4 text-2xl ">
+            <a href="https://www.linkedin.com/in/bharat-khatwani-864616257/" className="text-gray-500" target="_blank" rel="noopener noreferrer">
               <FaLinkedin className="hover:text-blue-600 cursor-pointer" />
             </a>
-            <a href="https://x.com/BharatKhatwan13" target="_blank" rel="noopener noreferrer">
+            <a href="https://x.com/BharatKhatwan13" target="_blank" className="text-gray-500" rel="noopener noreferrer">
               <FaXTwitter className="hover:text-blue-400 cursor-pointer" />
             </a>
-            <a href="https://github.com/BharatKhatwani" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/BharatKhatwani" target="_blank"  rel="noopener noreferrer">
               <LuGithub className="hover:text-gray-700 cursor-pointer" />
             </a>
           </div>

@@ -8,7 +8,8 @@ import React from "react";
 
 export default function LandingPage() {
   return (
-    <main className="flex flex-col items-center justify-center bg-gray-200 w-full">
+   <main className="flex flex-col items-center justify-center bg-gray-200 w-full overflow-y-hidden">
+
 
       {/* Hero Section */}
       <section className="text-center py-32 bg-gray-200 w-full">
@@ -99,7 +100,7 @@ function MiniFeature({ icon, title }: { icon: React.ReactNode; title: string }) 
 // FeatureCard Component
 function FeatureCard({ Icon, title, description }: { Icon: React.ElementType; title: string; description: string }) {
   return (
-    <div className="p-6 border rounded-lg shadow hover:shadow-lg transition flex flex-col items-center text-center gap-4 bg-white max-w-xs min-h-[220px]">
+    <div className="p-6 border rounded-lg shadow hover:shadow-lg transition flex flex-col items-center text-center gap-4 bg-gray-200 max-w-xs min-h-[220px]">
       <Icon className="text-3xl text-[#12478C]" />
       <h3 className="text-lg font-semibold">{title}</h3>
       <p className="text-gray-600 text-sm">{description}</p>
