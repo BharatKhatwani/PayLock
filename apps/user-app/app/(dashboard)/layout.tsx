@@ -11,7 +11,7 @@ export default async function DashboardLayout({
   // ✅ Server-side session check
   const session = await getServerSession(authOptions);
   if (!session?.user) {
-    redirect("/auth"); // Redirect if not logged in
+    redirect("/home"); // Redirect if not logged in
   }
 
   // ✅ Pass user or session into client layout if needed

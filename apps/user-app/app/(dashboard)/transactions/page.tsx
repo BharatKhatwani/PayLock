@@ -97,7 +97,7 @@ export default async function TransactionsPage() {
     <div className="w-full min-h-screen flex flex-col">
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-bold">
-          <span className="text-purple-500">PayLoad</span> Transactions
+          <span className="text-[#12478C]">PayLoad</span> Transactions
         </h1>
         <p className="text-gray-600 mt-2 italic">
           Secure and simple way to manage your transactions.
@@ -108,7 +108,7 @@ export default async function TransactionsPage() {
       <div className="max-w-3xl mx-auto w-full px-4 py-8 mb-2">
         <h2 className="text-2xl font-bold flex items-center justify-start gap-2 mb-6">
           <CiWallet className="text-blue-500" />
-          <span className="text-purple-500">P2P Transactions</span>
+          <span className="text-[#12478C]">P2P Transactions</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderP2pTransactions("Sent Transactions", sentMoney, "No sent payments", "-")}
@@ -120,7 +120,7 @@ export default async function TransactionsPage() {
       <div className="max-w-3xl mx-auto w-full px-4 py-8">
         <h2 className="text-2xl font-bold flex items-center justify-start gap-2 mb-6">
           <CiWallet className="text-blue-500" />
-          <span className="text-purple-500">Wallet Transactions</span>
+          <span className="text-[#12478C]">Wallet Transactions</span>
         </h2>
 
         <div className="mb-6">

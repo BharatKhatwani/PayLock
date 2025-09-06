@@ -31,8 +31,8 @@ export const OnRampTransaction = ({
   }
 
   return (
-    <Card title={title}>
-      <div className="pt-2 ">
+    <Card  title={title}>
+      <div className="pt-2  ">
         <div className="max-h-64 overflow-y-auto w-full ">
           {displayedTransactions.map((t, index) => (
             <div

@@ -59,10 +59,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4">
       <div className="w-full max-w-md p-8 border rounded shadow-md bg-white flex flex-col gap-6">
         <h1 className="text-2xl font-bold text-center">
-          Welcome to <span className="text-purple-500">PayLoad</span>
+          Welcome to <span className="text-[#12478C]">PayLoad</span>
         </h1>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
@@ -107,7 +107,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   className={`
     w-full py-3 px-4 text-white font-semibold rounded-lg
     shadow-md transition-all duration-200
-    ${isLoading ? "bg-blue-300 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}
+    ${isLoading ? "bg-blue-300 cursor-not-allowed" : "bg-[#12478C] hover:bg-[#12478C]"}
   `}
 >
   {isLoading ? "Loading..." : "Continue"}

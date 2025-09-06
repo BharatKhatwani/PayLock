@@ -55,7 +55,7 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="text-center px-2">
           <h1 className="text-2xl sm:text-4xl font-bold">
-            <span className="text-purple-500">PayLoad</span> Dashboard
+            <span className="text-[#12478C]">PayLoad</span> Dashboard
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 italic">
             Your smart wallet for effortless money management
@@ -128,9 +128,9 @@ export default async function DashboardPage() {
           </p>
           <Link
             href="/transactions"
-            className="cursor-pointer flex items-center gap-2 mt-1 sm:mt-2 text-purple-500 font-semibold text-sm sm:text-base"
+            className="cursor-pointer flex items-center gap-2 mt-1 sm:mt-2  font-semibold text-sm sm:text-base"
           >
-            <span>View Analytics Details</span>
+            <span className="text-[#12478C]">View Analytics Details</span>
             <IoIosArrowRoundForward />
           </Link>
         </div>

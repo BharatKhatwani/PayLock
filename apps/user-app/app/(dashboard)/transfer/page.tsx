@@ -46,7 +46,7 @@ export default async function () {
     <div className="w-full mt-2 ">
        <div className="mb-3">
   <h1 className="text-center text-3xl ">
-    <span className="text-purple-500 font-bold">PayLoad </span> Transfer 
+    <span className="text-[#12478C] font-bold">PayLoad </span> Transfer 
   </h1>
   <p className="text-center text-gray-600 mt-2 italic">
     Track all your transactions effortlessly

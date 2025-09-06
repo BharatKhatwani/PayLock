@@ -44,7 +44,7 @@ export function SendCard() {
   return (
     <div className="h-full mt-10">
       <Center>
-     <Card title="Send Money" className="bg-white">
+     <Card title="Send Money" className="bg-gray-200">
   <div className="min-w-80 pt-2">
     <div className="pt-2">
       <TextInput

@@ -13,7 +13,7 @@ console.log(session)
   }
 
   // Not logged in → show login page
-  redirect("/auth");
+  redirect("/home");
 
   return null; // never renders
 }

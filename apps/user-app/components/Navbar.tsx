@@ -12,7 +12,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar: () => voi
       <div className="flex items-center gap-4">
         {/* Sidebar toggle button (only on mobile) */}
         <button
-          className="md:hidden text-2xl text-purple-700"
+          className="md:hidden text-2xl text-[#12478C]"
           onClick={onToggleSidebar}
         >
           <IoMenuSharp />
@@ -20,7 +20,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar: () => voi
 
         <Link
           href="/dashboard"
-          className="text-2xl font-bold text-purple-700 cursor-pointer"
+          className="text-2xl font-bold text-[#12478C] cursor-pointer"
         >
           PayLoad
         </Link>
@@ -30,7 +30,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar: () => voi
       <div>
         <button
           onClick={() => signOut({ callbackUrl: "/auth" })}
-          className="px-4 py-2 bg-purple-700 text-white rounded hover:bg-purple-800 transition-colors"
+          className="px-4 py-2 bg-[#12478C] text-white rounded hover:bg-[#12478C] transition-colors"
         >
           Logout
         </button>
