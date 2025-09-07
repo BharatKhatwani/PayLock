@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "prisma generate && NEXT_SKIP_TYPECHECK=1 SKIP_ENV_VALIDATION=1 next build --no-lint",
+    "build": "prisma generate --schema=../../packages/db/prisma/schema.prisma && NEXT_SKIP_TYPECHECK=1 SKIP_ENV_VALIDATION=1 next build --no-lint",
     "start": "next start",
     "lint": "eslint . --max-warnings 0"
   },
@@ -39,5 +39,8 @@
     "prisma": "^5.16.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
+  },
+  "prisma": {
+    "schema": "../../packages/db/prisma/schema.prisma"
   }
 }
