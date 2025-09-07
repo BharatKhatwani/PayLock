@@ -2,19 +2,21 @@
   "name": "docs",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "prebuild": "cd ../../packages/db && npx prisma generate",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint . --max-warnings 0",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
+"scripts": {
+  "dev": "next dev --port 3001",
+  "prebuild": "cd ../../packages/db && npx prisma generate",
+  "build": "next build",
+  "prisma:generate": "cd ../../packages/db && npx prisma generate",
+  "start": "next start",
+  "lint": "eslint . --max-warnings 0"
+}
+,
   
 
   
 
   "dependencies": {
+     "@repo/db": "*",
     "@repo/store": "*",
     "@repo/ui": "*",
     "@types/bcrypt": "^5.0.2",
