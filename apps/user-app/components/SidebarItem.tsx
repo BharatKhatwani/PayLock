@@ -19,7 +19,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({ href, title, icon }) =
       className={`
         flex items-center gap-3 p-3 pl-6 rounded-l-lg
         cursor-pointer transition-colors duration-200
-        ${selected ? "bg-[#f0ebff] text-[#6a51a6] font-semibold" : "text-slate-500 hover:bg-slate-100 hover:text-[#6a51a6]"}
+        ${selected ? "bg-[#12478C] text-white font-semibold" : "text-slate-500 hover:bg-[#E6EEF7] hover:text-[#12478C]"}
       `}
       onClick={() => router.push(href)}
     >
