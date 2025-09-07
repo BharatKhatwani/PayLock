@@ -25,6 +25,7 @@ enum P2PTransferStatus {
   Failed
 }
 
+
 model p2pTransfer {
   id         Int               @id @default(autoincrement())
   amount     Int
