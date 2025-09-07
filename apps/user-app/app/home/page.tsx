@@ -17,7 +17,7 @@ export default function LandingPage() {
 
       {/* Animated Background Blobs */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: 1 }}
         animate={{ opacity: 0.3 }}
         transition={{ duration: 2 }}
         className="absolute top-[-150px] left-[-150px] w-[400px] h-[400px] bg-[#12478C] rounded-full blur-3xl"
