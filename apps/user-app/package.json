@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "NEXT_SKIP_TYPECHECK=1 SKIP_ENV_VALIDATION=1 next build --no-lint",
+    "build": "prisma generate && NEXT_SKIP_TYPECHECK=1 SKIP_ENV_VALIDATION=1 next build --no-lint",
     "start": "next start",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
     "@repo/store": "*",
     "@repo/ui": "*",
+    "@repo/db": "*",               
     "@types/bcrypt": "^5.0.2",
     "axios": "^1.11.0",
     "bcrypt": "^5.1.1",
@@ -35,6 +36,7 @@
     "eslint": "^8.57.0",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "prisma": "^5.16.1"             
   }
 }
