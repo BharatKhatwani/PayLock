@@ -13,7 +13,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="text-center py-16 sm:py-20 lg:py-32 bg-gray-200 w-full px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-          Manage your money with ease, <span className="text-[#12478C]">PayLoad</span>
+          Manage your money with ease, <span className="text-[#12478C]">PayLock</span>
         </h1>
         <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
           Top-up wallet, send money to anyone, and track transactions securely.
@@ -42,7 +42,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="py-16 px-4 md:px-20 w-full text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-12">Why PayLoad Stands Out</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-12">Why PayLockStands Out</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
           <FeatureCard
             Icon={CiWallet}
@@ -83,7 +83,7 @@ export default function LandingPage() {
           href="/auth" 
           className="mt-6 inline-flex items-center gap-2 bg-[#12478C] text-white px-5 sm:px-6 py-2 sm:py-3 rounded-xl hover:bg-[#0f3569] transition text-sm sm:text-base"
         >
-          Create Your Account on PayLoad
+          Create Your Account on PayLock
           <GoArrowRight size={20} className="sm:size-6"/>
         </Link>
       </section>

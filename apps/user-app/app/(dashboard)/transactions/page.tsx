@@ -99,7 +99,7 @@ export default async function TransactionsPage() {
     <div className="w-full min-h-screen flex flex-col">
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-bold">
-          <span className="text-[#12478C]">PayLoad</span> Transactions
+          <span className="text-[#12478C]">PayLock</span> Transactions
         </h1>
         <p className="text-gray-600 mt-2 italic">
           Secure and simple way to manage your transactions.

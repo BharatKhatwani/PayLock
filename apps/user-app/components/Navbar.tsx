@@ -22,7 +22,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar: () => voi
           href="/dashboard"
           className="text-2xl font-bold text-[#12478C] cursor-pointer"
         >
-          PayLoad
+          PayLock
         </Link>
       </div>
 

@@ -24,7 +24,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({ href, title, icon }) =
       onClick={() => router.push(href)}
     >
 
-        {/* <h1>PayLoad</h1>  brand / icons  */}
+        {/* <h1>PayLock</h1>  brand / icons  */}
       <div className="text-xl">{icon}</div>
       <span className="text-md">{title}</span>
     </div>

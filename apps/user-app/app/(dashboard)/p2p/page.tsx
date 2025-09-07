@@ -6,7 +6,7 @@ export default async function DashboardPage() {
       
       {/* Header */}
       <h1 className="text-3xl font-bold text-center m-0">
-        <span className="text-[#12478C]">PayLoad</span> P2P Transfer
+        <span className="text-[#12478C]">PayLock</span> P2P Transfer
       </h1>
       
       <p className="text-center text-gray-600 mt-2 italic">

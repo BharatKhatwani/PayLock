@@ -11,9 +11,9 @@ export default function Footer() {
       <div className="flex flex-col md:flex-row justify-between gap-8">
         {/* About */}
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-bold ">PayLoad</h1>
+          <h1 className="text-xl font-bold ">PayLock</h1>
           <p>Simplifying your finances with secure and seamless digital payments.</p>
-          <p>© 2025 PayLoad. All rights reserved.</p>
+          <p>© 2025 PayLock. All rights reserved.</p>
         </div>
 
         {/* Legal */}
@@ -43,7 +43,7 @@ export default function Footer() {
       <hr className="my-6" />
 
       <div className="text-center text-sm mt-4">
-        PayLoad is a registered trademark of PayLoad, Inc.
+        PayLock is a registered trademark of PayLock, Inc.
       </div>
     </footer>
   );

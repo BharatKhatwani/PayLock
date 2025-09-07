@@ -55,7 +55,7 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="text-center px-2">
           <h1 className="text-2xl sm:text-4xl font-bold">
-            <span className="text-[#12478C]">PayLoad</span> Dashboard
+            <span className="text-[#12478C]">PayLock</span> Dashboard
           </h1>
           <p className="mt-2 text-sm sm:text-base text-gray-600 italic">
             Your smart wallet for effortless money management
@@ -107,7 +107,7 @@ export default async function DashboardPage() {
               Add Funds
             </h2>
             <p className="text-sm sm:text-base text-gray-500">
-              Top up your PayLoad wallet easily.
+              Top up your PayLock wallet easily.
             </p>
             <Link href="/transfer" className="mt-2 sm:mt-4 w-full">
               <button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 sm:py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 text-sm sm:text-base">
