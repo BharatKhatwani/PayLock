@@ -4,8 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { TransactionList } from "../../../components/TransactionList";
 import { OnRampTransaction, p2pTransfer, OnRampStatus } from "@prisma/client";
-  // ✅ import enum
-// import {p2p}
+
 // Fetch P2P transactions
 async function getP2pTransactions(userId: number) {
   const txns = await prisma.p2pTransfer.findMany({
@@ -15,27 +14,27 @@ async function getP2pTransactions(userId: number) {
     orderBy: { timestamp: "desc" },
   });
 
-  return txns.map((t : p2pTransfer) => ({
+  return txns.map((t: p2pTransfer) => ({
     id: t.id,
     amount: t.amount,
-    timestamp: t.timestamp,
+    timestamp: t.timestamp || new Date(), // ✅ default to now if missing
     fromUserId: t.fromUserId,
     toUserId: t.toUserId,
     type: t.fromUserId === userId ? "Sent" : "Received",
   }));
 }
 
-// Fetch OnRamp transactions (status must be enum, not string)
+// Fetch OnRamp transactions
 async function getOnRampTransactions(userId: number, status: OnRampStatus) {
   const txns = await prisma.onRampTransaction.findMany({
-    where: { userId, status }, // ✅ status is enum now
+    where: { userId, status },
     orderBy: { startTime: "desc" },
   });
 
-  return txns.map((t : OnRampTransaction) => ({
+  return txns.map((t: OnRampTransaction) => ({
     id: t.id,
     amount: t.amount,
-    timestamp: t.startTime,
+    timestamp: t.startTime || new Date(), // ✅ default to now if missing
     status: t.status,
     provider: t.provider || "PayTM",
   }));
@@ -44,7 +43,7 @@ async function getOnRampTransactions(userId: number, status: OnRampStatus) {
 // Reusable renderer for OnRamp
 const renderOnRampTransactions = (
   title: string,
-  txns: any[],
+  txns: { id: number; amount: number; timestamp: Date; status: string; provider: string }[],
   color: string,
   emptyMsg: string,
   sign: string
@@ -65,7 +64,7 @@ const renderOnRampTransactions = (
 // Reusable renderer for P2P
 const renderP2pTransactions = (
   title: string,
-  txns: any[],
+  txns: { id: number; amount: number; timestamp: Date; fromUserId: number; toUserId: number; type: string }[],
   emptyMsg: string,
   sign: string
 ) => (
@@ -85,7 +84,6 @@ export default async function TransactionsPage() {
   const session = await getServerSession(authOptions);
   const userId = Number(session?.user?.id);
 
-  // ✅ use OnRampStatus enums instead of strings
   const [successTxns, pendingTxns, failedTxns, p2pTxns] = await Promise.all([
     getOnRampTransactions(userId, OnRampStatus.Success),
     getOnRampTransactions(userId, OnRampStatus.Processing),
@@ -114,18 +112,8 @@ export default async function TransactionsPage() {
           <span className="text-[#12478C]">P2P Transactions</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderP2pTransactions(
-            "Sent Transactions",
-            sentMoney,
-            "No sent payments",
-            "-"
-          )}
-          {renderP2pTransactions(
-            "Received Transactions",
-            receivedMoney,
-            "No received payments",
-            "+"
-          )}
+          {renderP2pTransactions("Sent Transactions", sentMoney, "No sent payments", "-")}
+          {renderP2pTransactions("Received Transactions", receivedMoney, "No received payments", "+")}
         </div>
       </div>
 
@@ -137,30 +125,12 @@ export default async function TransactionsPage() {
         </h2>
 
         <div className="mb-6">
-          {renderOnRampTransactions(
-            "Successful Transactions",
-            successTxns,
-            "text-green-600",
-            "No recent transactions",
-            "+"
-          )}
+          {renderOnRampTransactions("Successful Transactions", successTxns, "text-green-600", "No recent transactions", "+")}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {renderOnRampTransactions(
-            "Processing Transactions",
-            pendingTxns,
-            "text-yellow-600",
-            "No recent transactions",
-            ""
-          )}
-          {renderOnRampTransactions(
-            "Failed Transactions",
-            failedTxns,
-            "text-red-600",
-            "No recent transactions",
-            ""
-          )}
+          {renderOnRampTransactions("Processing Transactions", pendingTxns, "text-yellow-600", "No recent transactions", "")}
+          {renderOnRampTransactions("Failed Transactions", failedTxns, "text-red-600", "No recent transactions", "")}
         </div>
       </div>
     </div>
