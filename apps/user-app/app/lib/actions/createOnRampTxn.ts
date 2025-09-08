@@ -7,8 +7,7 @@ import axios from "axios";
 import { OnRampStatus } from "@prisma/client";
 import { env } from "process";
 
-// console.log("env.BACKEND_URL", env.BACKEND_URL);
-const BANK_WEBHOOK_URL = env.BACKEND_URL;
+const BANK_WEBHOOK_URL = env.BACKEND_URL!;
 const WEBHOOK_RETRY_LIMIT = 3;
 const WEBHOOK_TIMEOUT = 5000; // 5 seconds
 
