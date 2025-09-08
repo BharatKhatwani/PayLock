@@ -9,8 +9,12 @@
     "./client": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
+    "build": "tsc && prisma generate",
+    "dev": "prisma generate --watch",
+    "prepare": "npm run build",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev --name init",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0"
