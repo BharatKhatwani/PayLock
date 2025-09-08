@@ -3,8 +3,9 @@ import prisma from "@repo/db/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { TransactionList } from "../../../components/TransactionList";
-import { OnRampStatus } from "@prisma/client";  // ✅ import enum
-
+import { OnRampTransaction, p2pTransfer, OnRampStatus } from "@prisma/client";
+  // ✅ import enum
+// import {p2p}
 // Fetch P2P transactions
 async function getP2pTransactions(userId: number) {
   const txns = await prisma.p2pTransfer.findMany({
@@ -14,7 +15,7 @@ async function getP2pTransactions(userId: number) {
     orderBy: { timestamp: "desc" },
   });
 
-  return txns.map((t) => ({
+  return txns.map((t : p2pTransfer) => ({
     id: t.id,
     amount: t.amount,
     timestamp: t.timestamp,
@@ -31,7 +32,7 @@ async function getOnRampTransactions(userId: number, status: OnRampStatus) {
     orderBy: { startTime: "desc" },
   });
 
-  return txns.map((t) => ({
+  return txns.map((t : OnRampTransaction) => ({
     id: t.id,
     amount: t.amount,
     timestamp: t.startTime,
