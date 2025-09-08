@@ -21,7 +21,7 @@ A modern, fast, and secure peer‑to‑peer wallet. Send money, add funds, and t
 
 ---
 
-ech Stack
+Tech Stack
 
 Frontend:
 Next.js , React , Tailwind CSS, Framer Motion
@@ -102,8 +102,8 @@ PayLock/
 │  ├─ user-app/
 │  │  ├─ app/                     # Next.js App Router (routes, layouts, server components)
 │  │  │  └─ (dashboard)/
-│  │  │     └─ transfer/
-│  │  ├─ components/              # UI components for the user app
+│  │  │     
+│  │  ├─ components/             
 │  │  ├─ public/                  # Static assets served from root (/)
 │  │  │  ├─ home.png              # Default hero image used in README
 │  │  │  ├─ HDFC-Bank-Logo.png
