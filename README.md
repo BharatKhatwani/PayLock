@@ -1,81 +1,186 @@
-# Turborepo starter
+![Hero](apps/user-app/public/home.png)
 
-This is an official starter Turborepo.
+## PayLock
+A modern, fast, and secure peer‑to‑peer wallet. Send money, add funds, and track every transaction with confidence.
 
-## Using this example
+### Why PayLock?
+- **Simple**: Clean flows for adding money and sending payments
+- **Fast**: Built on Next.js App Router with server components
+- **Secure**: Authenticated with NextAuth (JWT) and validated inputs
+- **Scalable**: Turborepo monorepo with shared packages and Docker support
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
+## Features
+- **Wallet & Balance**: Real‑time available and locked balance
+- **Add Funds**: Simulated bank flows (HDFC, Axis) with on‑ramp transactions
+- **P2P Transfers**: Transfer with clear status (success, pending, failed)
+- **Insights**: Recent transactions and running totals
+- **Auth & Sessions**: NextAuth with JWT sessions
+- **Shared UI & DB**: Reusable UI kit and Prisma schema shared across apps
+
+---
+
+ech Stack
+
+Frontend:
+Next.js , React , Tailwind CSS, Framer Motion
+
+Authentication:
+NextAuth.js with JWT strategy
+
+Database:
+PostgreSQL managed via Prisma ORM
+
+State Management:
+Recoil (used for client-side state where needed)
+
+Tooling & Development:
+Turborepo monorepo, TypeScript, ESLint, Prettier
+
+Infrastructure & Deployment:
+
+Local development with Docker on AWS EC2
+
+Production-ready deployment on Vercel
+
+💡 Optional polish for a one-liner summary at the top:
+
+“Modern full-stack application using Next.js, PostgreSQL, and Prisma, with JWT-based authentication, state management via Recoil, and production-ready deployment on Vercel.”
+
+If you want, I can also write a “Project Overview + Tech Stack” section for your README that looks professional and investor/employer-ready, not just a list. It will make your repository shine.
+
+Do you want me to do that?
+
+---
+
+## Quick Start
+1) Clone
+```bash
+git clone https://github.com/BharatKhatwani/PayLock.git
+cd PayLock
 ```
 
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+2) Install dependencies (root)
+```bash
+npm install
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
+3) Environment variables (root)
+Create a `.env` file (or `.env.local`) and set:
 ```
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB
+NEXTAUTH_URL=http://localhost:3001
+JWT_SECRET=your_long_random_secret
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+4) Generate Prisma and run dev
+```bash
+npm run db:generate
+npm run dev
 ```
 
-## Useful Links
+- User app: http://localhost:3001
+- Merchant app (optional): http://localhost:3000
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## Scripts (root)
+- `npm run dev`: Start all apps in parallel (Turborepo)
+- `npm run build`: Build the user app (and dependencies)
+- `npm run lint`: Lint all workspaces
+- `npm run db:generate`: Prisma generate for shared DB package
+- `npm run db:migrate`: Create or apply a development migration
+- `npm run start-user-app`: Start the user app in production mode
+
+---
+
+## Folder Structure
+```text
+PayLock/
+├─ apps/
+│  ├─ user-app/
+│  │  ├─ app/                     # Next.js App Router (routes, layouts, server components)
+│  │  │  └─ (dashboard)/
+│  │  │     └─ transfer/
+│  │  ├─ components/              # UI components for the user app
+│  │  ├─ public/                  # Static assets served from root (/)
+│  │  │  ├─ home.png              # Default hero image used in README
+│  │  │  ├─ HDFC-Bank-Logo.png
+│  │  │  ├─ axisLogo.png
+│  │  │  ├─ circles.svg
+│  │  │  ├─ next.svg
+│  │  │  ├─ pexels-maitree-rimthong-444156-1602726.jpg
+│  │  │  ├─ turborepo.svg
+│  │  │  └─ vercel.svg
+│  │  ├─ types/
+│  │  ├─ provider.tsx             # Global client providers (Recoil, SessionProvider)
+│  │  ├─ next.config.js
+│  │  ├─ tailwind.config.js
+│  │  ├─ postcss.config.js
+│  │  ├─ package.json
+│  │  └─ vercel.json              # Optional Vercel build config for this app
+│  ├─ merchant-app/               # Optional merchant-facing app (Next.js)
+│  └─ bank_webhook_handler/       # Placeholder for webhook/Express handlers
+│     └─ src/
+│        └─ index.ts
+├─ packages/
+│  ├─ db/                         # Prisma schema + generated client
+│  │  └─ prisma/
+│  │     └─ schema.prisma
+│  ├─ ui/                         # Shared UI primitives/components
+│  ├─ store/                      # Shared state utilities
+│  ├─ eslint-config/              # Shared ESLint config
+│  └─ typescript-config/          # Shared tsconfig bases
+├─ docker/
+│  └─ Dockerfile.user             # Image for user-app
+├─ .github/                       # CI workflows (if any)
+├─ .turbo/                        # Turborepo cache (generated)
+├─ node_modules/                  # Root deps (generated)
+├─ package.json
+├─ package-lock.json
+├─ tsconfig.json
+├─ turbo.json
+└─ README.md
+```
+
+---
+
+## Development Notes
+- The user app listens on port `3001` by default (`apps/user-app/package.json`).
+- Server components fetch session via `getServerSession` and decide navigation (e.g., dashboard vs home).
+- Use `/public` assets in the user app via absolute paths like `/home.png`.
+- Database schema is centralized in `packages/db/prisma/schema.prisma`.
+
+---
+
+## Building & Running
+- Development (all workspaces):
+```bash
+npm run dev
+```
+
+- Production build (user app):
+```bash
+npm run build
+npm run start-user-app
+```
+
+- Docker (user app image): see `docker/Dockerfile.user`.
+
+---
+
+## Security
+- Use strong `JWT_SECRET` and keep it private
+- Never commit `.env*` files
+- Validate all inputs server‑side before DB writes
+
+---
+
+## License
+MIT — do what you love, be kind in attribution, and contribute back when you can.
+
+## Contact
+- Email: bharatkhatwani06@gmail.com
+- LinkedIn: Bharat Khatwani (`https://www.linkedin.com/in/bharat-khatwani-864616257/`)
+- Twitter: `https://x.com/BharatKhatwan13`
