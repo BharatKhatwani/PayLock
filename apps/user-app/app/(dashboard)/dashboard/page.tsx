@@ -21,7 +21,7 @@ async function getTransactions(userId: number) {
       take: 5,
     });
 
-    return transactions.map((t) => ({
+    return transactions.map((t : any) => ({
       ...t,
       time: t.startTime ? new Date(t.startTime) : new Date(),
       status: t.status || "Pending",
