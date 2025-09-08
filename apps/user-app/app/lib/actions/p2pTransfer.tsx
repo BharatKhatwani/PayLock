@@ -5,18 +5,20 @@ import prisma from "@repo/db/client";
 
 export async function p2pTransfer(to: string, amount: number) {
   let transferId: number | null = null;
-  
+
   try {
     const session = await getServerSession(authOptions);
     const from = session?.user?.id;
     if (!from) {
       throw new Error("User not authenticated");
     }
+    console.log("Sender ID:", from);
 
     // Validate recipient
     const toUser = await prisma.user.findFirst({
       where: { number: to },
     });
+    console.log("Recipient:", toUser);
 
     if (!toUser) {
       throw new Error("Recipient not found");
@@ -33,21 +35,24 @@ export async function p2pTransfer(to: string, amount: number) {
         fromUserId: Number(from),
         toUserId: toUser.id,
         amount,
-        status: 'Pending',
+        status: "Pending",
         timestamp: new Date(),
       },
     });
-    
     transferId = transfer.id;
+    console.log("Created pending transfer:", transferId);
 
     await prisma.$transaction(async (tx: any) => {
       // Lock the sender's balance for the duration of the transaction
-      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
-      
+      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(
+        from
+      )} FOR UPDATE`;
+
       // Check sender's balance
       const fromBalance = await tx.balance.findUnique({
         where: { userId: Number(from) },
       });
+      console.log("Sender balance:", fromBalance);
 
       if (!fromBalance) {
         throw new Error("Sender's account not found");
@@ -55,6 +60,16 @@ export async function p2pTransfer(to: string, amount: number) {
 
       if (fromBalance.amount < amount) {
         throw new Error("Insufficient funds");
+      }
+
+      // Check recipient's balance
+      const toBalance = await tx.balance.findUnique({
+        where: { userId: toUser.id },
+      });
+      console.log("Recipient balance:", toBalance);
+
+      if (!toBalance) {
+        throw new Error("Recipient's account not found");
       }
 
       // Perform the transfer
@@ -71,21 +86,25 @@ export async function p2pTransfer(to: string, amount: number) {
       // Update the transaction status to Success
       await tx.p2pTransfer.update({
         where: { id: transferId },
-        data: { status: 'Success' }
+        data: { status: "Success" },
       });
     });
 
+    console.log("Transfer successful");
     return { success: true, message: "Transfer successful" };
   } catch (error: any) {
+    console.log("Transfer error:", error);
+
     // Update transaction status to Failed if it was created
     if (transferId) {
-      await prisma.p2pTransfer.update({
-        where: { id: transferId },
-        data: { status: 'Failed' }
-      }).catch(console.error); // Prevent error in error handler
+      await prisma.p2pTransfer
+        .update({
+          where: { id: transferId },
+          data: { status: "Failed" },
+        })
+        .catch(console.error);
     }
-    
-    // Re-throw the error to be caught by the client
+
     throw new Error(error.message || "Transfer failed. Please try again.");
   }
 }

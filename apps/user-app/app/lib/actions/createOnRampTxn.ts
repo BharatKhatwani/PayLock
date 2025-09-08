@@ -6,7 +6,7 @@ import { authOptions } from "../auth";
 import axios from "axios";
 import { OnRampStatus } from "@prisma/client";
 
-const BANK_WEBHOOK_URL = "http://localhost:3003/hdfcWebhook";
+const BANK_WEBHOOK_URL = "https://bank-webhook-handler.onrender.com/hdfcWebhook";
 const WEBHOOK_RETRY_LIMIT = 3;
 const WEBHOOK_TIMEOUT = 5000; // 5 seconds
 
