@@ -54,7 +54,7 @@ export default function HDFCTransactionDemoPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <header className="bg-purple-500 text-white p-4">
+      <header className="bg-[#12478C] text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <Image src={hdfc} alt="HDFC Bank Logo" width={65} height={30} />
           <nav>
@@ -134,7 +134,7 @@ export default function HDFCTransactionDemoPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-purple-500 text-white text-sm p-4">
+      <footer className="bg-[#12478C] text-white text-sm p-4">
         <div className="container mx-auto text-center">
           © 2025 HDFC Bank Ltd. All rights reserved. | Demo Mode
         </div>
