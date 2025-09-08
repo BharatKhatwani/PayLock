@@ -5,8 +5,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import axios from "axios";
 import { OnRampStatus } from "@prisma/client";
+import { env } from "process";
 
-const BANK_WEBHOOK_URL = "https://bank-webhook-handler.onrender.com/hdfcWebhook";
+const BANK_WEBHOOK_URL = env.BACKEND_URL;
 const WEBHOOK_RETRY_LIMIT = 3;
 const WEBHOOK_TIMEOUT = 5000; // 5 seconds
 

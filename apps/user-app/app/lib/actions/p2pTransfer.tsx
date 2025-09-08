@@ -12,13 +12,13 @@ export async function p2pTransfer(to: string, amount: number) {
     if (!from) {
       throw new Error("User not authenticated");
     }
-    console.log("Sender ID:", from);
+    // console.log("Sender ID:", from);
 
     // Validate recipient
     const toUser = await prisma.user.findFirst({
       where: { number: to },
     });
-    console.log("Recipient:", toUser);
+    // console.log("Recipient:", toUser);
 
     if (!toUser) {
       throw new Error("Recipient not found");
@@ -40,7 +40,7 @@ export async function p2pTransfer(to: string, amount: number) {
       },
     });
     transferId = transfer.id;
-    console.log("Created pending transfer:", transferId);
+    // console.log("Created pending transfer:", transferId);
 
     await prisma.$transaction(async (tx: any) => {
       // Lock the sender's balance for the duration of the transaction
@@ -52,7 +52,7 @@ export async function p2pTransfer(to: string, amount: number) {
       const fromBalance = await tx.balance.findUnique({
         where: { userId: Number(from) },
       });
-      console.log("Sender balance:", fromBalance);
+      // console.log("Sender balance:", fromBalance);
 
       if (!fromBalance) {
         throw new Error("Sender's account not found");
@@ -66,7 +66,7 @@ export async function p2pTransfer(to: string, amount: number) {
       const toBalance = await tx.balance.findUnique({
         where: { userId: toUser.id },
       });
-      console.log("Recipient balance:", toBalance);
+      // console.log("Recipient balance:", toBalance);
 
       if (!toBalance) {
         throw new Error("Recipient's account not found");
@@ -90,10 +90,10 @@ export async function p2pTransfer(to: string, amount: number) {
       });
     });
 
-    console.log("Transfer successful");
+    // console.log("Transfer successful");
     return { success: true, message: "Transfer successful" };
   } catch (error: any) {
-    console.log("Transfer error:", error);
+    // console.log("Transfer error:", error);
 
     // Update transaction status to Failed if it was created
     if (transferId) {
@@ -102,7 +102,7 @@ export async function p2pTransfer(to: string, amount: number) {
           where: { id: transferId },
           data: { status: "Failed" },
         })
-        .catch(console.error);
+        // .catch(console.error);
     }
 
     throw new Error(error.message || "Transfer failed. Please try again.");
