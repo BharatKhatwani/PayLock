@@ -65,7 +65,7 @@ export default async function DashboardPage() {
         {/* Balance Card */}
         <div className="w-full flex justify-center mt-4 sm:mt-5">
           <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-4 sm:p-6 flex items-center gap-3 sm:gap-4">
-            <CiWallet className="text-3xl sm:text-4xl text-purple-500" />
+            <CiWallet className="text-3xl sm:text-4xl text-[#12478C]" />
             <div className="flex flex-col">
               <span className="text-gray-500 text-sm sm:text-base">
                 Available Balance
