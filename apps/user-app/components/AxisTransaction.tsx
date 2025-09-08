@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import axis from "../public/axisLogo.png";
-import { createOnRamptxn } from "../app/lib/actions/createOnRampTxn";
 
-export default function AxisTransactionPage() {
+export default function AxisTransactionDemoPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [message, setMessage] = useState("");
@@ -16,19 +15,28 @@ export default function AxisTransactionPage() {
     const processTransaction = async () => {
       if (transactionProcessed.current) return;
       transactionProcessed.current = true;
+
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const amount = urlParams.get("amount");
+
         if (amount) {
           const numericAmount = parseFloat(amount);
+
           if (numericAmount <= 0) {
             setMessage("Transaction amount must be greater than zero.");
           } else if (numericAmount > 1000000) {
             setMessage("Transaction amount exceeds the limit.");
           } else {
-            await createOnRamptxn(numericAmount * 100, "Axis Bank");
+            // Simulate transaction processing delay
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
             setIsComplete(true);
-            setMessage("Transaction completed successfully");
+            setMessage(
+              `Transaction of ₹${numericAmount.toFixed(
+                2
+              )} completed successfully (Demo)`
+            );
           }
         } else {
           setMessage("Invalid transaction amount.");
@@ -40,7 +48,6 @@ export default function AxisTransactionPage() {
       }
     };
 
-
     processTransaction();
   }, []);
 
@@ -49,10 +56,7 @@ export default function AxisTransactionPage() {
       {/* Header */}
       <header className="bg-purple-500 text-white ">
         <div className="container mx-auto flex justify-between items-center">
-          <Image src={axis} alt="Axis Bank Logo" 
-           width={65}
-            height={30}
-           />
+          <Image src={axis} alt="Axis Bank Logo" width={65} height={30} />
           <nav>
             <ul className="flex space-x-4 text-sm">
               <li>Personal</li>
@@ -68,7 +72,7 @@ export default function AxisTransactionPage() {
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
           <h1 className="text-2xl font-bold text-[#97144D] mb-6 text-center">
-            Transaction Processing
+            Transaction Processing (Demo)
           </h1>
 
           {isLoading ? (
@@ -101,7 +105,7 @@ export default function AxisTransactionPage() {
               </h2>
               <p className="text-lg">{message}</p>
               <p className="text-sm text-gray-600">
-                Transaction ID: AXIS
+                Transaction ID (Demo): AXIS
                 {Math.random().toString(36).substring(2, 11).toUpperCase()}
               </p>
             </div>
@@ -125,7 +129,7 @@ export default function AxisTransactionPage() {
               </h2>
               <p className="text-lg">{message}</p>
               <p className="text-sm text-gray-600">
-                Please try again or contact our customer support.
+                Please try again or contact customer support.
               </p>
             </div>
           )}
@@ -135,7 +139,7 @@ export default function AxisTransactionPage() {
       {/* Footer */}
       <footer className="bg-purple-500 text-white text-sm p-4">
         <div className="container mx-auto text-center">
-          © 2025 Axis Bank Ltd. All rights reserved. | Terms of Use | Privacy Policy
+          © 2025 Axis Bank Ltd. All rights reserved. | Demo Mode
         </div>
       </footer>
     </div>

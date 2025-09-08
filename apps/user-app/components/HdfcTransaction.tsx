@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import hdfc from "../public/HDFC-Bank-Logo.png";
-import { createOnRamptxn } from "../app/lib/actions/createOnRampTxn";
 
-export default function HDFCTransactionPage() {
+export default function HDFCTransactionDemoPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [message, setMessage] = useState("");
@@ -16,18 +15,28 @@ export default function HDFCTransactionPage() {
     const processTransaction = async () => {
       if (transactionProcessed.current) return;
       transactionProcessed.current = true;
-      try{
+
+      try {
         const urlParams = new URLSearchParams(window.location.search);
         const amount = urlParams.get("amount");
+
         if (amount) {
           const numericAmount = parseFloat(amount);
+
           if (numericAmount < 1 || numericAmount > 10000) {
             setMessage("Transaction amount should be between 1 and 10000.");
             setIsComplete(false);
           } else {
-            await createOnRamptxn(numericAmount * 100, "HDFC Bank");
+            // Simulate delay for transaction processing
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            // Instead of calling createOnRamptxn, we just mark as success
             setIsComplete(true);
-            setMessage("Transaction completed successfully");
+            setMessage(
+              `Transaction of ₹${numericAmount.toFixed(
+                2
+              )} completed successfully (Demo)`
+            );
           }
         } else {
           setMessage("Invalid transaction amount.");
@@ -40,19 +49,14 @@ export default function HDFCTransactionPage() {
     };
 
     processTransaction();
-  }, [createOnRamptxn]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <header className="bg-purple-500 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <Image
-            src={hdfc}
-            alt="HDFC Bank Logo"
-            width={65}
-            height={30}
-          />
+          <Image src={hdfc} alt="HDFC Bank Logo" width={65} height={30} />
           <nav>
             <ul className="flex space-x-4 text-sm">
               <li>Home</li>
@@ -68,7 +72,7 @@ export default function HDFCTransactionPage() {
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
           <h1 className="text-2xl font-bold text-[#004C8F] mb-6 text-center">
-            Transaction Processing
+            Transaction Processing (Demo)
           </h1>
 
           {isLoading ? (
@@ -101,7 +105,7 @@ export default function HDFCTransactionPage() {
               </h2>
               <p className="text-lg">{message}</p>
               <p className="text-sm text-gray-600">
-                Transaction ID: HDFC
+                Transaction ID (Demo): HDFC
                 {Math.random().toString(36).substring(2, 11).toUpperCase()}
               </p>
             </div>
@@ -124,9 +128,6 @@ export default function HDFCTransactionPage() {
                 Transaction Failed
               </h2>
               <p className="text-lg">{message}</p>
-              <p className="text-sm text-gray-600">
-                Please try again or contact customer support.
-              </p>
             </div>
           )}
         </div>
@@ -135,7 +136,7 @@ export default function HDFCTransactionPage() {
       {/* Footer */}
       <footer className="bg-purple-500 text-white text-sm p-4">
         <div className="container mx-auto text-center">
-          © 2025 HDFC Bank Ltd. All rights reserved. | Terms and Conditions | Privacy Policy
+          © 2025 HDFC Bank Ltd. All rights reserved. | Demo Mode
         </div>
       </footer>
     </div>

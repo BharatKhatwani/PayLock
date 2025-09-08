@@ -33,6 +33,7 @@ export const AddMoney = () => {
     setIsProcessing(true);
     
     try {
+      console.log("Client: Amount being sent to server:", amount);
       const result = await createOnRamptxn(amount * 100, provider);
       
       if (result.success) {
