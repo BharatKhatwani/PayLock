@@ -5,19 +5,36 @@ import { authOptions } from "../../lib/auth";
 import { TransactionList } from "../../../components/TransactionList";
 import { OnRampTransaction, p2pTransfer, OnRampStatus } from "@prisma/client";
 
+// P2P transaction type
+type P2PTxn = {
+  id: number;
+  amount: number;
+  timestamp: Date;
+  fromUserId: number;
+  toUserId: number;
+  type: "Sent" | "Received";
+};
+
+// OnRamp transaction type
+type OnRampTxn = {
+  id: number;
+  amount: number;
+  timestamp: Date;
+  status: string;
+  provider: string;
+};
+
 // Fetch P2P transactions
-async function getP2pTransactions(userId: number) {
+async function getP2pTransactions(userId: number): Promise<P2PTxn[]> {
   const txns = await prisma.p2pTransfer.findMany({
-    where: {
-      OR: [{ fromUserId: userId }, { toUserId: userId }],
-    },
+    where: { OR: [{ fromUserId: userId }, { toUserId: userId }] },
     orderBy: { timestamp: "desc" },
   });
 
   return txns.map((t: p2pTransfer) => ({
     id: t.id,
     amount: t.amount,
-    timestamp: t.timestamp || new Date(), // ✅ default to now if missing
+    timestamp: t.timestamp || new Date(),
     fromUserId: t.fromUserId,
     toUserId: t.toUserId,
     type: t.fromUserId === userId ? "Sent" : "Received",
@@ -25,7 +42,7 @@ async function getP2pTransactions(userId: number) {
 }
 
 // Fetch OnRamp transactions
-async function getOnRampTransactions(userId: number, status: OnRampStatus) {
+async function getOnRampTransactions(userId: number, status: OnRampStatus): Promise<OnRampTxn[]> {
   const txns = await prisma.onRampTransaction.findMany({
     where: { userId, status },
     orderBy: { startTime: "desc" },
@@ -34,49 +51,36 @@ async function getOnRampTransactions(userId: number, status: OnRampStatus) {
   return txns.map((t: OnRampTransaction) => ({
     id: t.id,
     amount: t.amount,
-    timestamp: t.startTime || new Date(), // ✅ default to now if missing
+    timestamp: t.startTime || new Date(),
     status: t.status,
     provider: t.provider || "PayTM",
   }));
 }
 
-// Reusable renderer for OnRamp
+// Renderer for OnRamp transactions
 const renderOnRampTransactions = (
   title: string,
-  txns: { id: number; amount: number; timestamp: Date; status: string; provider: string }[],
+  txns: OnRampTxn[],
   color: string,
   emptyMsg: string,
   sign: string
 ) => (
   <div className="bg-white p-5 rounded-xl shadow-sm border">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <TransactionList
-      txns={txns}
-      emptyMsg={emptyMsg}
-      type="onRamp"
-      color={color}
-      sign={sign}
-      limit={5}
-    />
+    <TransactionList txns={txns} emptyMsg={emptyMsg} type="onRamp" color={color} sign={sign} limit={5} />
   </div>
 );
 
-// Reusable renderer for P2P
+// Renderer for P2P transactions
 const renderP2pTransactions = (
   title: string,
-  txns: { id: number; amount: number; timestamp: Date; fromUserId: number; toUserId: number; type: string }[],
+  txns: P2PTxn[],
   emptyMsg: string,
   sign: string
 ) => (
   <div className="bg-white p-5 rounded-xl shadow-sm border">
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <TransactionList
-      txns={txns}
-      emptyMsg={emptyMsg}
-      type="p2p"
-      sign={sign}
-      limit={5}
-    />
+    <TransactionList txns={txns} emptyMsg={emptyMsg} type="p2p" sign={sign} limit={5} />
   </div>
 );
 
@@ -91,8 +95,8 @@ export default async function TransactionsPage() {
     getP2pTransactions(userId),
   ]);
 
-  const sentMoney = p2pTxns.filter((txn) => txn.type === "Sent");
-  const receivedMoney = p2pTxns.filter((txn) => txn.type === "Received");
+  const sentMoney: P2PTxn[] = p2pTxns.filter((txn: P2PTxn) => txn.type === "Sent");
+  const receivedMoney: P2PTxn[] = p2pTxns.filter((txn: P2PTxn) => txn.type === "Received");
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -100,9 +104,7 @@ export default async function TransactionsPage() {
         <h1 className="text-3xl font-bold">
           <span className="text-[#12478C]">PayLock</span> Transactions
         </h1>
-        <p className="text-gray-600 mt-2 italic">
-          Secure and simple way to manage your transactions.
-        </p>
+        <p className="text-gray-600 mt-2 italic">Secure and simple way to manage your transactions.</p>
       </div>
 
       {/* P2P Transactions */}
