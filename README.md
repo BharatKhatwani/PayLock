@@ -180,7 +180,10 @@ npm run start-user-app
 ## License
 MIT — do what you love, be kind in attribution, and contribute back when you can.
 
-## Contact
-- Email: bharatkhatwani06@gmail.com
-- LinkedIn: Bharat Khatwani (`https://www.linkedin.com/in/bharat-khatwani-864616257/`)
-- Twitter: `https://x.com/BharatKhatwan13`
+##Contact
+
+Email: bharatkhatwani06@gmail.com
+
+LinkedIn: Bharat Khatwani
+
+Twitter: @BharatKhatwan13
