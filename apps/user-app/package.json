@@ -6,7 +6,7 @@
     "dev": "next dev --port 3001",
     "build": "npm run prisma:generate && next build",
     "prisma:generate": "cd ../../packages/db && npm run generate",
-    "start": "next start",
+    "start": "next dev --port 3001",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {

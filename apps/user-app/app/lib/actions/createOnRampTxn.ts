@@ -8,6 +8,7 @@ import { OnRampStatus } from "@prisma/client";
 import { env } from "process";
 
 const BANK_WEBHOOK_URL = env.BACKEND_URL!;
+console.log("BANK_WEBHOOK_URL", BANK_WEBHOOK_URL);
 const WEBHOOK_RETRY_LIMIT = 3;
 const WEBHOOK_TIMEOUT = 5000; // 5 seconds
 
