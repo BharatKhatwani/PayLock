@@ -8,6 +8,7 @@ interface TransactionListProps {
   type: "p2p" | "onRamp";
   color?: string; // only for onRamp
   sign?: string;  // + or -
+  
 }
 
 export function TransactionList({ txns, emptyMsg, limit = 5, type, color, sign }: TransactionListProps) {
