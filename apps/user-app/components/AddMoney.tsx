@@ -19,14 +19,19 @@ export const AddMoney = () => {
   const [provider, setProvider] = useState<string>(SUPPORTED_BANKS[0]?.name || "");
   const [redirectUrl, setRedirectUrl] = useState<string>(SUPPORTED_BANKS[0]?.redirectUrl || "");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-
-  
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // ✅ fixed: single useState declaration
 
   // 🔹 function to handle "Add Money" button click
   const handleAddMoney = async () => {
+    // Basic validations
     if (amount <= 0) {
       toast.error("Please enter a valid amount");
+      return;
+    }
+
+    if (amount > 100000) {
+      setError("Amount should be under ₹1,00,000");
+      toast.error("Amount should be under ₹1,00,000");
       return;
     }
 
@@ -39,7 +44,6 @@ export const AddMoney = () => {
     setError(null);
 
     try {
-      // console.log("Sending request:", amount, provider);
       const result = await createOnRampTransaction(amount * 100, provider);
 
       if (result.success) {
@@ -57,7 +61,6 @@ export const AddMoney = () => {
       console.error("Error in add money:", err);
       setError("Try after some time");
 
-      // show user-friendly message
       const errorMessage = err?.message || "Failed to process payment. Please try again later.";
       toast.error(errorMessage);
 
@@ -110,15 +113,16 @@ export const AddMoney = () => {
           </Button>
         </div>
 
-        
+        {/* 🔹 Processing State */}
         {isProcessing && (
           <div className="text-center text-sm text-gray-600">
             Processing your request. Please wait...
           </div>
         )}
 
+        {/* 🔹 Error Message */}
         {error && (
-          <div className=" Error : text-center text-sm text-red-500">
+          <div className="text-center text-sm text-red-500">
             {error}
           </div>
         )}
