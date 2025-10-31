@@ -5,92 +5,67 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
 import axios from "axios";
 import { OnRampStatus } from "@prisma/client";
-import { env } from "process";
 
-const BANK_WEBHOOK_URL = env.BACKEND_URL!;
-console.log("BANK_WEBHOOK_URL", BANK_WEBHOOK_URL);
-const WEBHOOK_RETRY_LIMIT = 3;
-const WEBHOOK_TIMEOUT = 5000; // 5 seconds
+// Enum for transaction status
 
-export async function createOnRamptxn(amount: number, provider: string) {
+
+const BANK_WEBHOOK_URL =process.env.BANK_WEBHOOK_URL!
+  // console.log(BANK_WEBHOOK_URL)
+
+if (!BANK_WEBHOOK_URL) {
+  throw new Error("BANK_WEBHOOK_URL is not defined in environment variables");
+}
+export async function createOnRampTransaction(amount: number, provider: string) {
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
 
-  if (!userId) {
-    throw new Error("User not authenticated");
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized user");
   }
 
-  const token = Math.random().toString().substring(2, 7);
+  // Generate a random token
+  const token = Math.random().toString(36).substring(2, 10);
 
-  // Create transaction record with 'Processing' status first
+  // ✅ FIX: Add startTime
   const transaction = await prisma.onRampTransaction.create({
     data: {
-      userId: Number(userId),
-      amount: amount,
+      userId: Number(session.user.id),
+      amount,
       provider,
-      status: OnRampStatus.Processing, //  use enum
-      token: token,
-      startTime: new Date(),
+      status: OnRampStatus.Processing,
+      token,
+      startTime: new Date(), // ✅ <-- this fixes your Prisma error
     },
   });
 
-  try {
-    // Try to call the webhook
-    await callWebhookWithRetry(amount, token, userId);
+  console.log("Transaction created:", transaction);
 
-    // If webhook succeeds, update transaction status to Success
+  try {
+    // Simulate webhook (bank call)
+    const webhookResponse = await axios.post(BANK_WEBHOOK_URL, {
+      amount,
+      token,
+      userId: session.user.id,
+    });
+
+    console.log("Webhook response:", webhookResponse.data);
+
     await prisma.onRampTransaction.update({
       where: { id: transaction.id },
-      data: { status: OnRampStatus.Success }, // use enum
+      data: { status: OnRampStatus.Success },
     });
 
     return {
       success: true,
-      message: "Money added successfully",
+      message: "Money added successfully via webhook",
     };
-  } catch (error: any) {
-    // If webhook fails, update transaction status to Failure
+  } catch (error) {
+    console.error("Webhook error:", error);
+
     await prisma.onRampTransaction.update({
       where: { id: transaction.id },
-      data: { status: OnRampStatus.Failure }, // 
+      data: { status: OnRampStatus.Failure },
     });
 
-    throw new Error(
-      error.message || "Failed to process payment. Please try again later."
-    );
-  }
-}
-
-async function callWebhookWithRetry(
-  amount: number,
-  token: string,
-  userId: string,
-  retryCount = 0
-): Promise<void> {
-  try {
-    await axios.post(
-      BANK_WEBHOOK_URL,
-      {
-        amount: amount,
-        token: token,
-        userId: userId,
-      },
-      {
-        timeout: WEBHOOK_TIMEOUT,
-      }
-    );
-  } catch (error: any) {
-    if (retryCount < WEBHOOK_RETRY_LIMIT - 1) {
-      // Exponential backoff before retry
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000 * Math.pow(2, retryCount))
-      );
-      return callWebhookWithRetry(amount, token, userId, retryCount + 1);
-    }
-
-    // If we've exhausted all retries, throw the error
-    throw new Error(
-      "Payment service is currently unavailable. Please try again later."
-    );
+    throw new Error("Failed to process payment through webhook.");
   }
 }
