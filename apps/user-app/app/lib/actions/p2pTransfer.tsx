@@ -76,14 +76,11 @@ import { PrismaClient } from "@prisma/client";
 //     };
 //   }
 // }
-// "use server";
 
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "../auth";
-// import prisma, { PrismaClient } from "@repo/db/client";
 
 export async function p2pTransfer(to: string, amount: number) {
   console.log("💡 [p2pTransfer] Starting transfer:", { to, amount });
+
   try {
     const session = await getServerSession(authOptions);
     const from = session?.user?.id;
@@ -103,12 +100,9 @@ export async function p2pTransfer(to: string, amount: number) {
 
     console.log("✅ Performing transaction");
 
-    // Nested try to safely handle DB-level errors
     try {
-      await prisma.$transaction(async (tx: PrismaClient) => {
-        await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(
-          from
-        )} FOR UPDATE`;
+      await prisma.$transaction(async (tx) => {
+        await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
 
         await tx.balance.update({
           where: { userId: Number(from) },
