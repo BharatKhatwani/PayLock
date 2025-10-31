@@ -9,7 +9,7 @@ import { OnRampStatus } from "@prisma/client";
 // Enum for transaction status
 
 
-const BANK_WEBHOOK_URL =process.env.BANK_WEBHOOK_URL!
+const BANK_WEBHOOK_URL =process.env.BACKEND_URL!
   // console.log(BANK_WEBHOOK_URL)
 
 if (!BANK_WEBHOOK_URL) {
