@@ -9,41 +9,37 @@ export async function p2pTransfer(to: string, amount: number) {
   try {
     const session = await getServerSession(authOptions);
     const from = session?.user?.id;
-    if (!from) return { success: false, message: "User not authenticated" };
+    if (!from)
+      return { success: false, message: "User not authenticated" };
 
     // ✅ Validate recipient
     const toUser = await prisma.user.findFirst({
       where: { number: to },
     });
-    if (!toUser) return { success: false, message: "Recipient not found" };
+    if (!toUser)
+      return { success: false, message: "Recipient not found" };
 
     // ✅ Validate amount
     if (amount <= 0)
       return { success: false, message: "Amount must be greater than 0" };
 
-    // ✅ Lock + Transaction block
+    // ✅ Check sender balance before transaction
+    const fromBalance = await prisma.balance.findUnique({
+      where: { userId: Number(from) },
+    });
+
+    if (!fromBalance)
+      return { success: false, message: "Sender balance not found" };
+
+    if (fromBalance.amount < amount)
+      return { success: false, message: "Insufficient balance" };
+
+    // ✅ Lock + Transaction block (only if valid)
     await prisma.$transaction(async (tx: PrismaClient) => {
-      // 🔒 Lock sender’s balance row
-      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(
-        from
-      )} FOR UPDATE`;
+      // Lock the sender’s balance row
+      await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
 
-      const fromBalance = await tx.balance.findUnique({
-        where: { userId: Number(from) },
-      });
-      if (!fromBalance) throw new Error("Sender balance not found");
-
-      // ❌ If insufficient funds → custom code (no DB record)
-      if (fromBalance.amount < amount) {
-        throw new Error("INSUFFICIENT_FUNDS");
-      }
-
-      const toBalance = await tx.balance.findUnique({
-        where: { userId: toUser.id },
-      });
-      if (!toBalance) throw new Error("Recipient balance not found");
-
-      // ✅ Perform balance updates
+      // Perform balance updates
       await tx.balance.update({
         where: { userId: Number(from) },
         data: { amount: { decrement: amount } },
@@ -54,7 +50,7 @@ export async function p2pTransfer(to: string, amount: number) {
         data: { amount: { increment: amount } },
       });
 
-      // ✅ Create successful transaction record
+      // Create successful transaction record only after success
       await tx.p2pTransfer.create({
         data: {
           fromUserId: Number(from),
@@ -68,11 +64,6 @@ export async function p2pTransfer(to: string, amount: number) {
 
     return { success: true, message: "Transfer successful" };
   } catch (error: any) {
-    // ⚙️ Handle our custom error cleanly
-    if (error.message === "INSUFFICIENT_FUNDS") {
-      return { success: false, message: "Insufficient balance" };
-    }
-
     console.error("🚨 Transfer error:", error);
     return {
       success: false,
