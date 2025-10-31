@@ -23,21 +23,21 @@ export async function p2pTransfer(to: string, amount: number) {
 
     // ✅ Lock + Transaction block
     await prisma.$transaction(async (tx: PrismaClient) => {
-      // 🔒 Lock the sender’s balance row
+      // 🔒 Lock sender’s balance row
       await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(
         from
       )} FOR UPDATE`;
 
-      // 🔍 Get sender balance
       const fromBalance = await tx.balance.findUnique({
         where: { userId: Number(from) },
       });
       if (!fromBalance) throw new Error("Sender balance not found");
 
-      // ❌ If insufficient balance → abort (no record created)
-      if (fromBalance.amount < amount) throw new Error("Insufficient balance");
+      // ❌ If insufficient funds → custom code (no DB record)
+      if (fromBalance.amount < amount) {
+        throw new Error("INSUFFICIENT_FUNDS");
+      }
 
-      // 🔍 Get recipient balance
       const toBalance = await tx.balance.findUnique({
         where: { userId: toUser.id },
       });
@@ -54,7 +54,7 @@ export async function p2pTransfer(to: string, amount: number) {
         data: { amount: { increment: amount } },
       });
 
-      // ✅ Create successful transaction record only after success
+      // ✅ Create successful transaction record
       await tx.p2pTransfer.create({
         data: {
           fromUserId: Number(from),
@@ -68,6 +68,11 @@ export async function p2pTransfer(to: string, amount: number) {
 
     return { success: true, message: "Transfer successful" };
   } catch (error: any) {
+    // ⚙️ Handle our custom error cleanly
+    if (error.message === "INSUFFICIENT_FUNDS") {
+      return { success: false, message: "Insufficient balance" };
+    }
+
     console.error("🚨 Transfer error:", error);
     return {
       success: false,
